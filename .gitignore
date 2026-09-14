@@ -1,0 +1,34 @@
+# Segredos e ambiente
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Dados / uploads do RAG
+data/uploads/
+*.db
+*.sqlite3
+
+# Credenciais
+credentials/
+!credentials/.gitkeep
+
+# Frontend (React/Next.js)
+node_modules/
+.next/
+dist/
+build/
+
+# Sistema
+.DS_Store
+Thumbs.db
+*.log
