@@ -28,6 +28,10 @@ node_modules/
 dist/
 build/
 
+# Avatares - arquivos de design pesados, não vão pro Git
+avatares/*.psd
+avatares/*.html
+
 # Sistema
 .DS_Store
 Thumbs.db
