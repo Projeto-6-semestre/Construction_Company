@@ -7,7 +7,7 @@
 - [x] Estrutura de pastas (`app/`, `migrations/`, `tests/`, `scripts/`, `docs/`)
 - [x] Guia de workflow do time (`CLAUDE.md`)
 - [ ] Stack final aprovada pelo time (framework web, ORM, vector store, provedor de LLM — recomendações em `CLAUDE.md`, seção 11)
-- [ ] Repositório criado na organização GitHub
+- [x] Repositório criado na organização GitHub
 - [ ] Primeiro "hello world" da API
 - [ ] Banco de dados local + primeira migration
 - [ ] Núcleo do RAG
