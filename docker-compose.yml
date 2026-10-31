@@ -1,0 +1,32 @@
+services:
+  db:
+    image: pgvector/pgvector:pg16
+    environment:
+      POSTGRES_USER: estoque
+      POSTGRES_PASSWORD: estoque
+      POSTGRES_DB: estoque_construcao
+    ports:
+      - "5432:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U estoque -d estoque_construcao"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  api:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+asyncpg://estoque:estoque@db:5432/estoque_construcao
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+
+volumes:
+  db_data:

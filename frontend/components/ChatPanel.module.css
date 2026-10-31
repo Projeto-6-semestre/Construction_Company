@@ -1,0 +1,90 @@
+.panel {
+  background: rgba(20, 22, 26, 0.72);
+  border-radius: 12px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  flex: 1;
+  min-width: 0;
+  min-height: 480px;
+  backdrop-filter: blur(6px);
+}
+
+.lista {
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  padding-right: 0.25rem;
+}
+
+.digitando,
+.erro {
+  font-size: 0.82rem;
+  color: #b7bec7;
+}
+
+.erro {
+  color: #f0a0a0;
+}
+
+.sugestoes {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+}
+
+.sugestao {
+  background: rgba(255, 255, 255, 0.08);
+  color: #f2f0ea;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.sugestao:hover:not(:disabled) {
+  border-color: #d9814c;
+}
+
+.sugestao:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
+.formulario {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.input {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 8px;
+  padding: 0.6rem 0.8rem;
+  color: #f2f0ea;
+  font-size: 0.9rem;
+}
+
+.input::placeholder {
+  color: #8b93a1;
+}
+
+.enviarButton {
+  background: #b8622e;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  padding: 0.6rem 1.1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.enviarButton:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
