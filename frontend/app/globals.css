@@ -1,0 +1,22 @@
+:root {
+  color-scheme: dark;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  background:
+    radial-gradient(circle at 15% 10%, rgba(184, 98, 46, 0.18), transparent 45%),
+    linear-gradient(160deg, #1b212a 0%, #12161c 55%, #0d1013 100%);
+  color: #f2f0ea;
+  min-height: 100vh;
+}
