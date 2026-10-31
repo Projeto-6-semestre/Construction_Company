@@ -84,39 +84,47 @@ Regras inegociáveis (repetidas em todos os guias que lemos, valem para qualquer
 
 O `wmsbox-agent` (projeto de inspiração) **não tem** separação em camadas — é um script único onde config, dado e lógica de negócio se misturam, o que dificulta testar e crescer. Vamos evitar isso desde o início.
 
-Estrutura de pastas já criada no repositório (esqueleto, sem código ainda — cada pasta tem um `.gitkeep`):
+Estrutura de pastas (Fase 1 já implementada — agente de estoque de materiais de construção):
 
 ```
 app/
-├── api/            # camada de apresentação: rotas/endpoints (ex: FastAPI routers)
+├── api/            # camada de apresentação: rotas FastAPI (health, produtos, pedidos, chat)
 ├── services/       # lógica de negócio / orquestração (equivalente ao "controller" do MVC)
-├── models/         # modelos de banco (ORM) + schemas de validação (Pydantic)
+├── models/         # modelos de banco (SQLAlchemy) + schemas de validação (Pydantic)
 ├── repositories/   # acesso a dados (camada entre services e banco/models)
+├── agent/          # agente de IA via LangChain (tool-calling) — ver nota abaixo
 ├── rag/
-│   ├── ingestion/  # carregamento e chunking de documentos
-│   ├── embeddings/ # geração de embeddings
-│   └── retrieval/  # busca vetorial / re-ranking / montagem de contexto
-├── core/           # config tipada, segurança, logging — sem depender de framework de apresentação
+│   ├── ingestion/  # reservado para fase futura: carregamento e chunking de documentos
+│   ├── embeddings/ # reservado para fase futura: geração de embeddings
+│   └── retrieval/  # reservado para fase futura: busca vetorial / re-ranking
+├── core/           # config tipada, db, logging — sem depender de framework de apresentação
 migrations/          # migrations de banco (Alembic — ver seção 6)
 tests/
-├── unit/
-└── integration/
+├── unit/           # sem banco/LLM real (SQLite em memória)
+└── integration/    # contra Postgres real
 scripts/             # scripts utilitários (seed de dados, manutenção, etc.)
 docs/                # documentação adicional do projeto
+frontend/            # React + Next.js (App Router) — consome a API acima
 ```
 
+**Nota sobre `app/agent/` vs `app/rag/`**: a Fase 1 não é um RAG documental clássico — é um agente que **consulta e altera estoque** via um conjunto fixo de ferramentas (tool-calling), não busca semântica em documentos. Por isso ganhou pasta própria, irmã de `rag/`. A pasta `rag/{ingestion,embeddings,retrieval}` continua reservada para quando o projeto adicionar busca documental de verdade (ex: manuais de produto, notas), usando pgvector.
+
 Princípios (tirados do "prompt de auditoria de segurança MVC" e do que faltou no `wmsbox-agent`):
-- Ponto único de entrada da aplicação.
+- Ponto único de entrada da aplicação (`app/main.py`).
 - Sem lógica de negócio duplicada espalhada entre camadas.
 - `core/config.py` (configuração) não deve importar nada de apresentação (o `wmsbox-agent` tinha `import streamlit` dentro do config — evitar esse acoplamento).
-- Nada de efeito colateral pesado no `import` de módulo (o `wmsbox-agent` carregava o CSV e criava o agente já ao importar o módulo — dificulta testes unitários). Inicialização explícita (factory functions), não implícita.
-- Configuração de ambiente **tipada e validada** (ex: `pydantic-settings`), não só variáveis soltas lidas com `os.getenv` espalhadas pelo código.
+- Nada de efeito colateral pesado no `import` de módulo (o `wmsbox-agent` carregava o CSV e criava o agente já ao importar o módulo — dificulta testes unitários). Inicialização explícita (factory functions com `lru_cache`), não implícita.
+- Configuração de ambiente **tipada e validada** (`pydantic-settings`), não só variáveis soltas lidas com `os.getenv` espalhadas pelo código.
+- **Agente de IA nunca gera SQL/código livre**: ele só escolhe qual ferramenta chamar (`consultar_estoque`, `registrar_pedido`, `repor_estoque`) e com quais argumentos — quem grava no banco é código Python determinístico nosso. Ver seção 8.
 
-**A definir com o time** (ideias/sugestões, não decisão fechada):
-- Framework web: FastAPI (assíncrono, docs automáticas, tipagem nativa com Pydantic) é o mais indicado para uma API Python moderna.
-- ORM + migrations: SQLAlchemy 2.x + Alembic.
-- Empacotamento/dependências: `pyproject.toml` + lockfile (Poetry ou `uv`) em vez de só `requirements.txt` com `>=` solto (foi um ponto fraco identificado no projeto de referência — sem pin exato, builds diferentes em máquinas diferentes do time podem se comportar diferente).
-- Lint/format: `ruff` (lint + format).
+**Decidido (Fase 1)**:
+- Framework web: **FastAPI** (assíncrono).
+- ORM + migrations: **SQLAlchemy 2.x (async) + Alembic**.
+- Banco: **PostgreSQL** (imagem `pgvector/pgvector:pg16` — extensão instalada mas não usada ainda, reservada pro futuro).
+- Empacotamento/dependências: **`pyproject.toml` + lockfile via `uv`**.
+- Provedor de LLM: **Hugging Face** (roteador `router.huggingface.co/v1`, modelo `Qwen/Qwen2.5-72B-Instruct`) — mesmo padrão já validado no `wmsbox-agent`, gratuito.
+- Frontend: **React + Next.js** (App Router).
+- Lint/format: `ruff`.
 - Testes: `pytest`.
 
 ---
@@ -342,10 +350,11 @@ Ordem recomendada para o time (ajustável, mas é uma sequência lógica testada
 
 ## 11. Pendências / decisões em aberto para o time discutir
 
-- [ ] Nome definitivo do repositório.
-- [ ] Framework web definitivo (sugestão: FastAPI).
-- [ ] Vector store definitivo, se o RAG for documental (Chroma? FAISS? pgvector?).
-- [ ] Provedor de LLM (Anthropic? OpenAI? outro?).
+- [x] Framework web: **FastAPI** (decidido e implementado, Fase 1).
+- [x] Provedor de LLM: **Hugging Face** (`Qwen/Qwen2.5-72B-Instruct` via roteador, decidido e implementado, Fase 1).
+- [x] Empacotamento: **`pyproject.toml` + `uv`** (decidido e implementado, Fase 1).
+- [ ] Nome definitivo do repositório (atualmente `Construction_Company`).
+- [ ] Vector store/RAG documental de verdade (pgvector já está instalado na imagem do banco, mas sem uso ainda) — fica pra quando o projeto precisar buscar em documentos não-estruturados (manuais, notas), não pro controle de estoque em si (que é dado estruturado, resolvido com SQL via as ferramentas do agente).
 - [ ] Migration automática ou manual em produção (seção 6.3) — sugestão inicial: manual.
 - [ ] Onde hospedar (VPS próprio? Oracle Cloud free tier como o projeto de referência? outro?).
 - [ ] Regras adicionais de code review / convenção de commit que o time quiser formalizar aqui.
