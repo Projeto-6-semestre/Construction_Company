@@ -6,7 +6,7 @@
 
 - [x] Estrutura de pastas e `CLAUDE.md`
 - [x] Repositório criado na organização GitHub
-- [x] Stack definida: FastAPI + SQLAlchemy/Alembic + PostgreSQL (pgvector reservado) + Hugging Face + React/Next.js
+- [x] Stack definida: FastAPI + SQLAlchemy/Alembic + PostgreSQL (pgvector reservado) + Groq + React/Next.js
 - [x] Banco de dados + migration inicial (5 tabelas: produtos, fornecedores, pedidos, itens_pedido, movimentacoes_estoque)
 - [x] Camada de serviço com regra de negócio (pedido só confirma se TODOS os itens tiverem estoque)
 - [x] Agente de IA via LangChain (tool-calling, sem execução de código/SQL livre)
@@ -19,7 +19,7 @@ Roadmap completo em [`CLAUDE.md`](./CLAUDE.md), seção 10. Detalhes de papéis/
 
 ## Stack
 
-Python 3.12+ · FastAPI (async) · SQLAlchemy 2.x + Alembic · PostgreSQL (`pgvector/pgvector:pg16`) · LangChain + Hugging Face (`Qwen/Qwen2.5-72B-Instruct`) · React + Next.js · `uv` · pytest · Docker.
+Python 3.12+ · FastAPI (async) · SQLAlchemy 2.x + Alembic · PostgreSQL (`pgvector/pgvector:pg16`) · LangChain + Groq (`llama-3.3-70b-versatile`) · React + Next.js · `uv` · pytest · Docker.
 
 ## Como rodar localmente
 
@@ -29,9 +29,9 @@ Python 3.12+ · FastAPI (async) · SQLAlchemy 2.x + Alembic · PostgreSQL (`pgve
 # 1. Instalar dependencias
 uv sync
 
-# 2. Copiar e preencher o .env (precisa de um token gratuito da Hugging Face)
+# 2. Copiar e preencher o .env (precisa de uma chave gratuita da Groq - console.groq.com/keys)
 cp .env.example .env
-# edite .env e preencha HUGGINGFACE_API_TOKEN
+# edite .env e preencha GROQ_API_KEY
 
 # 3. Subir o banco
 docker compose up -d db
