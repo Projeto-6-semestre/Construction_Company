@@ -1,0 +1,229 @@
+.main {
+  min-height: 100vh;
+  padding: 2rem clamp(1rem, 4vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  color: #f2f0ea;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.header h1 {
+  margin: 0 0 0.25rem;
+  font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem);
+}
+
+.header p {
+  margin: 0;
+  color: #c4cad3;
+  font-size: 0.92rem;
+}
+
+.link {
+  color: #d9814c;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.formNovo {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.8rem;
+}
+
+.formNovo h2 {
+  margin: 0;
+  font-size: 1rem;
+}
+
+.gridForm {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.6rem;
+}
+
+.gridForm input {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  padding: 0.5rem 0.7rem;
+  color: #f2f0ea;
+  font-size: 0.85rem;
+}
+
+.botaoCriar {
+  align-self: flex-start;
+  background: #b8622e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.55rem 1.2rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.botaoCriar:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+
+.erro {
+  color: #f0a0a0;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.estado {
+  color: #8b93a1;
+  font-size: 0.9rem;
+}
+
+.tabelaScroll {
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.tabela th {
+  text-align: left;
+  color: #b7bec7;
+  font-weight: 500;
+  padding: 0.6rem 0.7rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tabela td {
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  vertical-align: middle;
+}
+
+.sku {
+  font-family: ui-monospace, monospace;
+  font-size: 0.78rem;
+  color: #d9814c;
+}
+
+.somenteLeitura {
+  color: #8b93a1;
+}
+
+.linhaEditando {
+  background: rgba(184, 98, 46, 0.08);
+}
+
+.linhaEditando input {
+  width: 100%;
+  min-width: 80px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+  color: #f2f0ea;
+  font-size: 0.82rem;
+}
+
+.inputImagem {
+  width: 100%;
+  min-width: 140px;
+  margin-top: 0.4rem;
+}
+
+.acoesEdicao {
+  min-width: 160px;
+}
+
+.celulaMiniatura {
+  min-width: 70px;
+}
+
+.miniaturaImg {
+  width: 48px;
+  height: 48px;
+  object-fit: cover;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  display: block;
+}
+
+.miniaturaIcone {
+  width: 48px;
+  height: 48px;
+  border-radius: 6px;
+  background: rgba(255, 255, 255, 0.06);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.botoesLinha {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.botaoSalvar {
+  background: #b8622e;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.botaoSalvar:disabled {
+  opacity: 0.6;
+}
+
+.botaoCancelar {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: #c4cad3;
+  border-radius: 6px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+
+.botaoEditar {
+  background: transparent;
+  border: 1px solid #b8622e;
+  color: #d9814c;
+  border-radius: 6px;
+  padding: 0.35rem 0.7rem;
+  font-size: 0.78rem;
+  cursor: pointer;
+}
+
+.erroLinha {
+  color: #f0a0a0;
+  font-size: 0.75rem;
+  margin: 0 0 0.3rem;
+}

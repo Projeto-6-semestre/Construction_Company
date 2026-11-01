@@ -122,7 +122,7 @@ Princípios (tirados do "prompt de auditoria de segurança MVC" e do que faltou 
 - ORM + migrations: **SQLAlchemy 2.x (async) + Alembic**.
 - Banco: **PostgreSQL** (imagem `pgvector/pgvector:pg16` — extensão instalada mas não usada ainda, reservada pro futuro).
 - Empacotamento/dependências: **`pyproject.toml` + lockfile via `uv`**.
-- Provedor de LLM: **Hugging Face** (roteador `router.huggingface.co/v1`, modelo `Qwen/Qwen2.5-72B-Instruct`) — mesmo padrão já validado no `wmsbox-agent`, gratuito.
+- Provedor de LLM: **Groq** (endpoint `api.groq.com/openai/v1`, compatível com a API da OpenAI; modelo `llama-3.3-70b-versatile`) — gratuito, sem cartão. A ideia original era Hugging Face (mesmo padrão do `wmsbox-agent`), mas a HF removeu o crédito gratuito mensal em 15/10/2026, então trocamos pra Groq, que mantém tier gratuito de verdade e bom suporte a tool-calling.
 - Frontend: **React + Next.js** (App Router).
 - Lint/format: `ruff`.
 - Testes: `pytest`.
@@ -214,7 +214,7 @@ jobs:
 
 - `VPS_HOST`, `VPS_USER`, `VPS_SSH_KEY` (chave SSH **dedicada** ao deploy, gerada só pra isso: `ssh-keygen -t ed25519 -f ~/.ssh/deploy_key -N ""` — nunca reaproveitar chave pessoal).
 - `VPS_PATH_HOMOLOGACAO`, `VPS_PATH_PRODUCAO`.
-- Chaves de API do(s) provedor(es) de LLM usados no RAG (ex: `ANTHROPIC_API_KEY`, `OPENAI_API_KEY`, `HUGGINGFACE_API_TOKEN` — o que o time decidir usar).
+- Chaves de API do(s) provedor(es) de LLM usados no RAG (`GROQ_API_KEY` — decidido na Fase 1).
 - ⚠️ Se **Deploy Keys** (SSH) do GitHub estiverem desativadas por política da organização (aconteceu num dos projetos de referência, erro HTTP 422), a alternativa é clonar via **Personal Access Token** na URL (`https://usuario:TOKEN@github.com/...`), de preferência gerado numa conta institucional, não pessoal. A chave SSH que o Actions usa pra conectar no VPS é um mecanismo diferente e não é afetada por essa política.
 
 ---
@@ -351,7 +351,7 @@ Ordem recomendada para o time (ajustável, mas é uma sequência lógica testada
 ## 11. Pendências / decisões em aberto para o time discutir
 
 - [x] Framework web: **FastAPI** (decidido e implementado, Fase 1).
-- [x] Provedor de LLM: **Hugging Face** (`Qwen/Qwen2.5-72B-Instruct` via roteador, decidido e implementado, Fase 1).
+- [x] Provedor de LLM: **Groq** (`llama-3.3-70b-versatile`, decidido e implementado, Fase 1 — trocado de Hugging Face após a HF remover o crédito gratuito em 15/10/2026).
 - [x] Empacotamento: **`pyproject.toml` + `uv`** (decidido e implementado, Fase 1).
 - [ ] Nome definitivo do repositório (atualmente `Construction_Company`).
 - [ ] Vector store/RAG documental de verdade (pgvector já está instalado na imagem do banco, mas sem uso ainda) — fica pra quando o projeto precisar buscar em documentos não-estruturados (manuais, notas), não pro controle de estoque em si (que é dado estruturado, resolvido com SQL via as ferramentas do agente).

@@ -5,7 +5,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.enums import StatusPedido, TipoMovimentacao
 from app.models.pedido import Pedido
 from app.models.produto import Produto
-from app.models.schemas import ItemPedidoCreate
+from app.models.schemas import ItemPedidoCreate, ProdutoCreate, ProdutoUpdate
 from app.repositories import (
     fornecedor_repository,
     movimentacao_repository,
@@ -16,6 +16,7 @@ from app.services.exceptions import (
     EstoqueInsuficienteError,
     ItemFaltante,
     ProdutoNaoEncontradoError,
+    SkuJaExisteError,
 )
 
 
@@ -31,6 +32,23 @@ async def consultar_estoque(
         produto = await produto_repository.get_by_sku(db, sku)
         return [produto] if produto is not None else []
     return await produto_repository.list_produtos(db, categoria=categoria, abaixo_do_minimo=abaixo_do_minimo)
+
+
+async def listar_catalogo(
+    db: AsyncSession,
+    *,
+    categoria: str | None = None,
+    page: int = 1,
+    page_size: int = 12,
+) -> tuple[list[Produto], int]:
+    """Vitrine publica paginada."""
+    return await produto_repository.list_produtos_paginado(
+        db, categoria=categoria, page=page, page_size=page_size
+    )
+
+
+async def listar_categorias(db: AsyncSession) -> list[str]:
+    return await produto_repository.list_categorias(db)
 
 
 async def registrar_pedido(
@@ -126,6 +144,43 @@ async def repor_estoque(
             fornecedor_id=fornecedor.id,
         )
         produto_repository.aplicar_delta_quantidade(produto, quantidade)
+
+        await db.commit()
+    except Exception:
+        await db.rollback()
+        raise
+
+    await db.refresh(produto)
+    return produto
+
+
+async def criar_produto(db: AsyncSession, dados: ProdutoCreate) -> Produto:
+    try:
+        existente = await produto_repository.get_by_sku(db, dados.sku)
+        if existente is not None:
+            raise SkuJaExisteError(dados.sku)
+
+        produto = await produto_repository.criar(db, **dados.model_dump())
+        await db.commit()
+    except Exception:
+        await db.rollback()
+        raise
+
+    await db.refresh(produto)
+    return produto
+
+
+async def atualizar_produto(db: AsyncSession, produto_id: int, dados: ProdutoUpdate) -> Produto:
+    try:
+        produto = await produto_repository.get_by_id(db, produto_id)
+        if produto is None:
+            raise ProdutoNaoEncontradoError(f"id={produto_id}")
+
+        # exclude_unset: so aplica os campos que vieram de verdade no payload -
+        # permite inclusive limpar a promocao mandando preco_promocional: null
+        # de proposito, sem mexer nos campos que o cliente nao enviou.
+        for campo, valor in dados.model_dump(exclude_unset=True).items():
+            setattr(produto, campo, valor)
 
         await db.commit()
     except Exception:

@@ -17,7 +17,15 @@ class Pedido(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     cliente_nome: Mapped[str] = mapped_column(String(200), nullable=False)
     status: Mapped[StatusPedido] = mapped_column(
-        Enum(StatusPedido, name="status_pedido_enum", native_enum=True),
+        Enum(
+            StatusPedido,
+            name="status_pedido_enum",
+            native_enum=True,
+            # Grava o .value ("confirmado") em vez do nome do membro Python
+            # ("CONFIRMADO") - precisa bater com os valores que a migration
+            # usou pra criar o tipo ENUM nativo do Postgres.
+            values_callable=lambda enum_cls: [member.value for member in enum_cls],
+        ),
         nullable=False,
         default=StatusPedido.CONFIRMADO,
     )

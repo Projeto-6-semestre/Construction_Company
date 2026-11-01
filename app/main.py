@@ -5,7 +5,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-from app.api.routes import chat, health, pedidos, produtos
+from app.api.routes import auth, chat, health, pedidos, produtos
 from app.core.config import get_settings
 from app.core.db import dispose_engine
 from app.core.logging import configure_logging
@@ -28,11 +28,12 @@ def create_app() -> FastAPI:
         CORSMiddleware,
         allow_origins=settings.cors_allow_origins,
         allow_credentials=False,
-        allow_methods=["GET", "POST"],
+        allow_methods=["GET", "POST", "PATCH"],
         allow_headers=["*"],
     )
 
     app.include_router(health.router)
+    app.include_router(auth.router)
     app.include_router(produtos.router)
     app.include_router(pedidos.router)
     app.include_router(chat.router)

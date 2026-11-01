@@ -38,6 +38,11 @@
   cursor: default;
 }
 
+.tabelaScroll {
+  max-height: 420px;
+  overflow-y: auto;
+}
+
 .tabela {
   width: 100%;
   border-collapse: collapse;
@@ -45,6 +50,9 @@
 }
 
 .tabela th {
+  position: sticky;
+  top: 0;
+  background: #14161a;
   text-align: left;
   color: #b7bec7;
   font-weight: 500;

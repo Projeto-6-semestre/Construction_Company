@@ -18,8 +18,42 @@ class ProdutoRead(BaseModel):
     quantidade_atual: Decimal
     quantidade_minima: Decimal
     preco_unitario: Decimal
+    preco_promocional: Decimal | None
+    imagem_url: str | None
     criado_em: datetime
     atualizado_em: datetime
+
+
+class ProdutoPage(BaseModel):
+    items: list[ProdutoRead]
+    total: int
+    page: int
+    page_size: int
+
+
+class ProdutoCreate(BaseModel):
+    sku: str
+    nome: str
+    categoria: str
+    unidade_medida: str
+    quantidade_atual: Decimal = Field(ge=0, default=Decimal(0))
+    quantidade_minima: Decimal = Field(ge=0, default=Decimal(0))
+    preco_unitario: Decimal = Field(gt=0)
+    preco_promocional: Decimal | None = Field(default=None, gt=0)
+    imagem_url: str | None = None
+
+
+class ProdutoUpdate(BaseModel):
+    """Edita cadastro/preco - nunca quantidade_atual direto (isso so muda via
+    pedido/reposicao, pra nao furar o historico de movimentacoes)."""
+
+    nome: str | None = None
+    categoria: str | None = None
+    unidade_medida: str | None = None
+    quantidade_minima: Decimal | None = Field(default=None, ge=0)
+    preco_unitario: Decimal | None = Field(default=None, gt=0)
+    preco_promocional: Decimal | None = Field(default=None, gt=0)
+    imagem_url: str | None = None
 
 
 class ItemPedidoCreate(BaseModel):
@@ -68,3 +102,13 @@ class ChatRequest(BaseModel):
 
 class ChatResponse(BaseModel):
     resposta: str
+
+
+class LoginRequest(BaseModel):
+    username: str
+    senha: str
+
+
+class TokenResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
