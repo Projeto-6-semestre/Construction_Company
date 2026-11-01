@@ -5,6 +5,7 @@ from app.models.item_pedido import ItemPedido
 from app.models.movimentacao_estoque import MovimentacaoEstoque
 from app.models.pedido import Pedido
 from app.models.produto import Produto
+from app.models.usuario import Usuario
 
 __all__ = [
     "Base",
@@ -15,4 +16,5 @@ __all__ = [
     "Produto",
     "StatusPedido",
     "TipoMovimentacao",
+    "Usuario",
 ]

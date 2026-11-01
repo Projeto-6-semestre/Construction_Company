@@ -24,6 +24,8 @@ class Produto(Base):
     quantidade_atual: Mapped[Decimal] = mapped_column(Numeric(12, 3), nullable=False, default=0)
     quantidade_minima: Mapped[Decimal] = mapped_column(Numeric(12, 3), nullable=False, default=0)
     preco_unitario: Mapped[Decimal] = mapped_column(Numeric(12, 2), nullable=False)
+    preco_promocional: Mapped[Decimal | None] = mapped_column(Numeric(12, 2), nullable=True)
+    imagem_url: Mapped[str | None] = mapped_column(String(500), nullable=True)
 
     criado_em: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=func.now())
     atualizado_em: Mapped[datetime] = mapped_column(

@@ -24,7 +24,13 @@ class MovimentacaoEstoque(Base):
         ForeignKey("produtos.id", ondelete="RESTRICT"), nullable=False, index=True
     )
     tipo: Mapped[TipoMovimentacao] = mapped_column(
-        Enum(TipoMovimentacao, name="tipo_movimentacao_enum", native_enum=True), nullable=False
+        Enum(
+            TipoMovimentacao,
+            name="tipo_movimentacao_enum",
+            native_enum=True,
+            values_callable=lambda enum_cls: [member.value for member in enum_cls],
+        ),
+        nullable=False,
     )
     quantidade: Mapped[Decimal] = mapped_column(Numeric(12, 3), nullable=False)
     motivo: Mapped[str | None] = mapped_column(String(300), nullable=True)

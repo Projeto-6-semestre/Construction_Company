@@ -17,12 +17,16 @@ class Settings(BaseSettings):
 
     database_url: str
 
-    huggingface_api_token: str
-    llm_model: str = "Qwen/Qwen2.5-72B-Instruct"
-    llm_base_url: str = "https://router.huggingface.co/v1"
+    groq_api_key: str
+    llm_model: str = "openai/gpt-oss-120b"
+    llm_base_url: str = "https://api.groq.com/openai/v1"
     llm_temperature: float = 0.0
 
     cors_allow_origins: list[str] = ["http://localhost:3000"]
+
+    # Autenticacao do painel interno (funcionarios/dono da empresa).
+    jwt_secret: str
+    jwt_expiracao_minutos: int = 480
 
     model_config = SettingsConfigDict(
         env_file=".env",

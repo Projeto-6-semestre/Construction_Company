@@ -8,6 +8,12 @@ class ProdutoNaoEncontradoError(Exception):
         super().__init__(f"Produto com SKU '{sku}' nao encontrado.")
 
 
+class SkuJaExisteError(Exception):
+    def __init__(self, sku: str):
+        self.sku = sku
+        super().__init__(f"Ja existe um produto com o SKU '{sku}'.")
+
+
 class ItemFaltante(NamedTuple):
     sku: str
     solicitado: Decimal

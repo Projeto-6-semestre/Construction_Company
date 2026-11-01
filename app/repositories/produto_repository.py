@@ -1,6 +1,6 @@
 from decimal import Decimal
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.produto import Produto
@@ -38,7 +38,43 @@ async def list_produtos(
     return list(result.scalars().all())
 
 
+async def list_produtos_paginado(
+    db: AsyncSession,
+    *,
+    categoria: str | None = None,
+    page: int = 1,
+    page_size: int = 12,
+) -> tuple[list[Produto], int]:
+    """Catalogo paginado pra vitrine publica - diferente de list_produtos (usada
+    pelo agente, sem paginacao, porque o agente precisa do conjunto inteiro que
+    bate o filtro pra responder certo, nao so uma pagina)."""
+    stmt = select(Produto)
+    count_stmt = select(func.count()).select_from(Produto)
+    if categoria is not None:
+        stmt = stmt.where(Produto.categoria == categoria)
+        count_stmt = count_stmt.where(Produto.categoria == categoria)
+
+    total = (await db.execute(count_stmt)).scalar_one()
+
+    stmt = stmt.order_by(Produto.nome).offset((page - 1) * page_size).limit(page_size)
+    itens = list((await db.execute(stmt)).scalars().all())
+    return itens, total
+
+
+async def list_categorias(db: AsyncSession) -> list[str]:
+    stmt = select(Produto.categoria).distinct().order_by(Produto.categoria)
+    result = await db.execute(stmt)
+    return list(result.scalars().all())
+
+
 def aplicar_delta_quantidade(produto: Produto, delta: Decimal) -> None:
     """delta positivo = entrada, negativo = saida. So ajusta o objeto em memoria;
     quem decide commit/rollback e a camada de servico."""
     produto.quantidade_atual = produto.quantidade_atual + delta
+
+
+async def criar(db: AsyncSession, **campos) -> Produto:
+    produto = Produto(**campos)
+    db.add(produto)
+    await db.flush()
+    return produto

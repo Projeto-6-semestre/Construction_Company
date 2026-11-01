@@ -18,13 +18,27 @@ from app.services import estoque_service
 from app.services.exceptions import EstoqueInsuficienteError, ProdutoNaoEncontradoError
 
 
+def _formatar_quantidade(valor: Decimal) -> str:
+    """Numero puro, sem zero a mais e sem separador de milhar - um valor tipo
+    Decimal('300.000') (3 casas decimais fixas da coluna NUMERIC) vira "300",
+    nunca "300.000" ou "300 000". Isso importa porque "300.000" escrito por um
+    LLM em portugues pode virar "trezentos mil" (ponto como separador de milhar)
+    em vez de "trezentos" (ponto como casa decimal) - erro de 1000x no estoque.
+    `:f` forca notacao de ponto fixo (nunca cientifica) antes do rstrip.
+    """
+    texto = f"{valor:f}"
+    if "." in texto:
+        texto = texto.rstrip("0").rstrip(".")
+    return texto
+
+
 def _format_produtos(produtos: list[Produto]) -> str:
     if not produtos:
         return "Nenhum produto encontrado com esses filtros."
     linhas = [
         f"- {p.sku} | {p.nome} | categoria: {p.categoria} | "
-        f"estoque atual: {p.quantidade_atual} {p.unidade_medida} | "
-        f"minimo: {p.quantidade_minima} {p.unidade_medida} | "
+        f"estoque atual: {_formatar_quantidade(p.quantidade_atual)} {p.unidade_medida} | "
+        f"minimo: {_formatar_quantidade(p.quantidade_minima)} {p.unidade_medida} | "
         f"preco unitario: R$ {p.preco_unitario}"
         for p in produtos
     ]
@@ -33,7 +47,9 @@ def _format_produtos(produtos: list[Produto]) -> str:
 
 def _format_estoque_insuficiente(itens) -> str:
     detalhes = "; ".join(
-        f"{i.sku}: pedido {i.solicitado}, disponivel {i.disponivel}" for i in itens
+        f"{i.sku}: pedido {_formatar_quantidade(i.solicitado)}, "
+        f"disponivel {_formatar_quantidade(i.disponivel)}"
+        for i in itens
     )
     return f"Estoque insuficiente para concluir o pedido. Itens com falta: {detalhes}"
 
@@ -90,7 +106,7 @@ def make_tools(db: AsyncSession) -> list[BaseTool]:
             return _format_estoque_insuficiente(erro.itens)
         except ProdutoNaoEncontradoError as erro:
             return f"SKU nao encontrado: {erro.sku}"
-        itens_txt = ", ".join(f"{i.sku} x{i.quantidade}" for i in itens)
+        itens_txt = ", ".join(f"{i.sku} x{_formatar_quantidade(i.quantidade)}" for i in itens)
         return f"Pedido #{pedido.id} confirmado para {cliente_nome}: {itens_txt}."
 
     @tool("repor_estoque", args_schema=ReporEstoqueArgs)
@@ -113,6 +129,9 @@ def make_tools(db: AsyncSession) -> list[BaseTool]:
             )
         except ProdutoNaoEncontradoError as erro:
             return f"SKU nao encontrado: {erro.sku}"
-        return f"Estoque de {produto.sku} atualizado: {produto.quantidade_atual} {produto.unidade_medida}."
+        return (
+            f"Estoque de {produto.sku} atualizado: "
+            f"{_formatar_quantidade(produto.quantidade_atual)} {produto.unidade_medida}."
+        )
 
     return [consultar_estoque, registrar_pedido, repor_estoque]
