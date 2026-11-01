@@ -1,0 +1,111 @@
+.footer {
+  background: #221f1d;
+  color: #d6d0c8;
+  margin-top: 3rem;
+}
+
+.grid {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2.5rem clamp(1rem, 4vw, 3rem) 2rem;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 2rem;
+}
+
+@media (max-width: 720px) {
+  .grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+.colunaMarca {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  grid-column: span 2;
+}
+
+@media (max-width: 720px) {
+  .colunaMarca {
+    grid-column: span 2;
+  }
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.logo {
+  object-fit: contain;
+  background: white;
+  border-radius: 6px;
+  padding: 2px;
+}
+
+.marcaNome {
+  font-weight: 700;
+  font-size: 1rem;
+  color: #ffffff;
+}
+
+.descricao {
+  margin: 0;
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: #a39a8e;
+  max-width: 40ch;
+}
+
+.coluna h4 {
+  margin: 0 0 0.8rem;
+  font-size: 0.85rem;
+  color: #ffffff;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.coluna ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.coluna a {
+  color: #a39a8e;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.coluna a:hover {
+  color: #d9814c;
+}
+
+.listaPlaceholder li {
+  font-size: 0.85rem;
+  color: #a39a8e;
+}
+
+.aviso {
+  font-size: 0.72rem !important;
+  color: #7a736a !important;
+  font-style: italic;
+}
+
+.rodapeInferior {
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 1rem clamp(1rem, 4vw, 3rem);
+  max-width: 1200px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-size: 0.78rem;
+  color: #8a8178;
+}

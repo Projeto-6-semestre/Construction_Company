@@ -1,0 +1,54 @@
+.secao {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.titulo {
+  font-size: 1.1rem;
+  margin: 0;
+  color: #221f1d;
+}
+
+.grid {
+  display: flex;
+  gap: 0.75rem;
+  overflow-x: auto;
+  padding-bottom: 0.5rem;
+}
+
+.card {
+  flex: 0 0 auto;
+  width: 110px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  background: #ffffff;
+  border: 1px solid #ebe3d8;
+  border-radius: 10px;
+  padding: 0.9rem 0.5rem;
+  cursor: pointer;
+  color: #221f1d;
+  text-align: center;
+  box-shadow: 0 1px 2px rgba(34, 31, 29, 0.04);
+}
+
+.card:hover {
+  border-color: #d9814c;
+}
+
+.cardAtivo {
+  background: #fdf0e6;
+  border-color: #b8622e;
+}
+
+.icone {
+  font-size: 1.8rem;
+}
+
+.rotulo {
+  font-size: 0.78rem;
+  line-height: 1.2;
+  color: #4a443e;
+}
