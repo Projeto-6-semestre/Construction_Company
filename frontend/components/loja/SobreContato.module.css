@@ -1,0 +1,105 @@
+.secao {
+  background: #ffffff;
+  border: 1px solid #ebe3d8;
+  border-radius: 12px;
+  padding: 2rem clamp(1.25rem, 3vw, 2.5rem);
+  margin-top: 1rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1.6fr 1fr;
+  gap: 2.5rem;
+}
+
+@media (max-width: 760px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sobre h2,
+.contato h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1.3rem;
+  color: #221f1d;
+}
+
+.sobre > p {
+  margin: 0 0 1.5rem;
+  color: #4a443e;
+  font-size: 0.92rem;
+  line-height: 1.6;
+  max-width: 62ch;
+}
+
+.destaques {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.destaque {
+  display: flex;
+  gap: 0.8rem;
+  align-items: flex-start;
+}
+
+.destaqueIcone {
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+
+.destaque h3 {
+  margin: 0 0 0.15rem;
+  font-size: 0.92rem;
+  color: #221f1d;
+}
+
+.destaque p {
+  margin: 0;
+  font-size: 0.82rem;
+  color: #6b6560;
+  line-height: 1.5;
+}
+
+.contato {
+  background: #faf6f1;
+  border-radius: 10px;
+  padding: 1.5rem;
+  align-self: start;
+}
+
+.contatoIntro {
+  margin: 0 0 1rem;
+  font-size: 0.85rem;
+  color: #6b6560;
+}
+
+.contatoLista {
+  list-style: none;
+  margin: 0 0 0.9rem;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  font-size: 0.88rem;
+  color: #221f1d;
+}
+
+.contatoLista li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.contatoIcone {
+  font-size: 0.95rem;
+}
+
+.aviso {
+  margin: 0;
+  font-size: 0.72rem;
+  color: #a39a8e;
+  font-style: italic;
+}

@@ -1,0 +1,105 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  background: #ffffff;
+  border: 1px solid #ebe3d8;
+  border-radius: 10px;
+  padding: 1rem;
+  box-shadow: 0 1px 2px rgba(34, 31, 29, 0.04);
+}
+
+.imagem {
+  position: relative;
+  aspect-ratio: 4 / 3;
+  border-radius: 8px;
+  background: #faf6f1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.6rem;
+  margin-bottom: 0.3rem;
+  overflow: hidden;
+}
+
+.imagemFoto {
+  object-fit: cover;
+}
+
+.selo {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.5rem;
+  background: #b8422e;
+  color: white;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: 999px;
+}
+
+.codigo {
+  margin: 0;
+  font-family: ui-monospace, monospace;
+  font-size: 0.72rem;
+  color: #a39a8e;
+}
+
+.nome {
+  margin: 0;
+  font-size: 0.92rem;
+  font-weight: 500;
+  color: #221f1d;
+  line-height: 1.3;
+  min-height: 2.4em;
+}
+
+.preco {
+  margin: 0.2rem 0 0.4rem;
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #221f1d;
+  display: flex;
+  align-items: baseline;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+}
+
+.unidade {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: #8a8178;
+}
+
+.precoAntigo {
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: #a39a8e;
+  text-decoration: line-through;
+}
+
+.precoPromo {
+  color: #b8422e;
+}
+
+.botao {
+  margin-top: auto;
+  background: transparent;
+  border: 1.5px solid #b8622e;
+  color: #b8622e;
+  border-radius: 6px;
+  padding: 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.botao:hover:not(:disabled) {
+  background: #fdf0e6;
+}
+
+.botao:disabled {
+  border-color: #d8d2c8;
+  color: #a39a8e;
+  cursor: default;
+}

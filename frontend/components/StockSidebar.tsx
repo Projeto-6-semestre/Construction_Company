@@ -5,6 +5,14 @@ import { ApiError, getProdutos } from "@/lib/api";
 import type { Produto } from "@/types/api";
 import styles from "./StockSidebar.module.css";
 
+// A API devolve "300.000" (3 casas decimais fixas da coluna do banco) - exibir
+// isso cru confundiria quem le em pt-BR (ponto = separador de milhar nesse
+// idioma). Number() descarta os zeros extras, toLocaleString formata direito
+// (5000 vira "5.000" de verdade, 300 continua "300").
+function formatarQuantidade(valor: string): string {
+  return Number(valor).toLocaleString("pt-BR", { maximumFractionDigits: 3 });
+}
+
 export function StockSidebar() {
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [carregando, setCarregando] = useState(true);
@@ -54,29 +62,31 @@ export function StockSidebar() {
         <p className={styles.vazio}>Nenhum produto cadastrado ainda.</p>
       )}
 
-      <table className={styles.tabela}>
-        <thead>
-          <tr>
-            <th>SKU</th>
-            <th>Produto</th>
-            <th>Qtd.</th>
-          </tr>
-        </thead>
-        <tbody>
-          {produtos.map((p) => {
-            const abaixoDoMinimo = Number(p.quantidade_atual) < Number(p.quantidade_minima);
-            return (
-              <tr key={p.id} className={abaixoDoMinimo ? styles.linhaAlerta : undefined}>
-                <td className={styles.sku}>{p.sku}</td>
-                <td>{p.nome}</td>
-                <td className={styles.quantidade}>
-                  {p.quantidade_atual} {p.unidade_medida}
-                </td>
-              </tr>
-            );
-          })}
-        </tbody>
-      </table>
+      <div className={styles.tabelaScroll}>
+        <table className={styles.tabela}>
+          <thead>
+            <tr>
+              <th>SKU</th>
+              <th>Produto</th>
+              <th>Qtd.</th>
+            </tr>
+          </thead>
+          <tbody>
+            {produtos.map((p) => {
+              const abaixoDoMinimo = Number(p.quantidade_atual) < Number(p.quantidade_minima);
+              return (
+                <tr key={p.id} className={abaixoDoMinimo ? styles.linhaAlerta : undefined}>
+                  <td className={styles.sku}>{p.sku}</td>
+                  <td>{p.nome}</td>
+                  <td className={styles.quantidade}>
+                    {formatarQuantidade(p.quantidade_atual)} {p.unidade_medida}
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
     </aside>
   );
 }

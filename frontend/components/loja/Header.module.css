@@ -1,0 +1,83 @@
+.header {
+  background: #ffffff;
+  border-bottom: 1px solid #ebe3d8;
+  box-shadow: 0 1px 3px rgba(34, 31, 29, 0.06);
+  position: sticky;
+  top: 0;
+  z-index: 20;
+}
+
+.conteudo {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0.7rem clamp(1rem, 4vw, 3rem);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.marca {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  text-decoration: none;
+}
+
+.logoImg {
+  flex-shrink: 0;
+  object-fit: contain;
+}
+
+.marcaTexto {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.15;
+}
+
+.marcaNome {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #221f1d;
+}
+
+.marcaSlogan {
+  font-size: 0.72rem;
+  color: #8a8178;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 1.1rem;
+}
+
+.navLink {
+  color: #4a443e;
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+}
+
+.navLink:hover {
+  color: #b8622e;
+}
+
+.botaoCarrinho {
+  background: #b8622e;
+  color: white;
+  border: none;
+  border-radius: 999px;
+  padding: 0.55rem 1.1rem;
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.botaoCarrinho:hover {
+  background: #a6552a;
+}
