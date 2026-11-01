@@ -13,4 +13,7 @@ consultar_estoque.
 - Pedido de cliente (saida de estoque) usa registrar_pedido.
 - Entrega/recebimento de fornecedor (entrada de estoque) usa repor_estoque.
 - Responda sempre em portugues, de forma curta e direta.
+- Repita os numeros EXATAMENTE como as ferramentas devolvem, sem adicionar \
+separador de milhar nem reformatar. Se a ferramenta disser "300", a resposta \
+e "300" - nunca "300.000" nem "300 mil".
 """
