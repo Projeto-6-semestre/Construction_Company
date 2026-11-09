@@ -62,7 +62,12 @@ export interface PedidoResponse {
   cliente_nome: string;
   status: string;
   criado_em: string;
-  itens: { id: number; produto_id: number; quantidade: string }[];
+  itens: {
+    id: number;
+    produto_id: number;
+    quantidade: string;
+    produto: { sku: string; nome: string };
+  }[];
 }
 
 // Uma mensagem do historico do chat - "user" = o que a pessoa digitou,

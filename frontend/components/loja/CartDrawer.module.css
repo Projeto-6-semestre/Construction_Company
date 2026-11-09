@@ -126,6 +126,13 @@
   margin: 0;
 }
 
+.dica {
+  color: #8a8178;
+  font-size: 0.78rem;
+  margin: 0;
+  font-style: italic;
+}
+
 .botaoPrimario {
   background: #b8622e;
   color: white;

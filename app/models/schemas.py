@@ -83,12 +83,23 @@ class ItemPedidoCreate(BaseModel):
     quantidade: Decimal = Field(gt=0)
 
 
+class ProdutoResumoRead(BaseModel):
+    """Versao enxuta do produto, so pra exibir dentro de um item de pedido no
+    painel (nome/sku) - sem repetir o schema inteiro de ProdutoRead."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    sku: str
+    nome: str
+
+
 class ItemPedidoRead(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
     id: int
     produto_id: int
     quantidade: Decimal
+    produto: ProdutoResumoRead
 
 
 class PedidoCreate(BaseModel):
