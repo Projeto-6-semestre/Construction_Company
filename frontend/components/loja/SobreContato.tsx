@@ -18,6 +18,8 @@ const DESTAQUES = [
   },
 ];
 
+// Secao institucional no rodape da loja (quem somos + contato). Conteudo
+// estatico, so os dados de contato sao placeholder (ver aviso no final da secao).
 export function SobreContato() {
   return (
     <section className={styles.secao}>

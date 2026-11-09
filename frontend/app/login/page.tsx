@@ -6,6 +6,8 @@ import { ApiError, login } from "@/lib/api";
 import { setToken } from "@/lib/auth";
 import styles from "./page.module.css";
 
+// Tela de login do painel interno (rota /login). Guarda o token recebido no
+// localStorage e manda pra "/" (painel) se o login der certo.
 export default function LoginPage() {
   const router = useRouter();
   const [username, setUsername] = useState("");

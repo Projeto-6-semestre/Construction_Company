@@ -4,11 +4,12 @@ import { iconeCategoria, rotuloCategoria } from "@/lib/categorias";
 import styles from "./CategoryGrid.module.css";
 
 interface Props {
-  categorias: string[];
-  categoriaAtiva: string | null;
+  categorias: string[]; // vem da API - lista real de categorias que existem no catalogo
+  categoriaAtiva: string | null; // null = "Todos" selecionado
   onSelecionar: (categoria: string | null) => void;
 }
 
+// Grade de cards de categoria no topo da loja (filtro visual dos produtos).
 export function CategoryGrid({ categorias, categoriaAtiva, onSelecionar }: Props) {
   return (
     <section className={styles.secao}>

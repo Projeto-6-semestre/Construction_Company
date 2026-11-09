@@ -1,3 +1,4 @@
+# Configuracao central de logging do app - chamada uma vez no startup (ver main.py).
 import logging
 import sys
 

@@ -1,3 +1,4 @@
+// Guarda/le/apaga o token JWT do login do painel interno no localStorage do navegador.
 const CHAVE_TOKEN = "painel_token";
 
 // localStorage e simples o suficiente pro prazo deste projeto, mas vale saber

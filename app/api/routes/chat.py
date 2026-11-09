@@ -1,3 +1,4 @@
+# Rota que liga o painel interno ao agente de IA (app/agent/agent_service.py).
 from fastapi import APIRouter
 
 from app.agent import agent_service

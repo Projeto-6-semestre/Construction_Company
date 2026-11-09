@@ -12,6 +12,9 @@ if TYPE_CHECKING:
 
 
 class Pedido(Base):
+    """Um pedido de compra de um cliente. So e criado depois que o estoque de
+    TODOS os itens foi confirmado (ver services/estoque_service.registrar_pedido)."""
+
     __tablename__ = "pedidos"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

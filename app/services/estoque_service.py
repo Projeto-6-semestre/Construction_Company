@@ -1,3 +1,6 @@
+# Camada de servico: regra de negocio do estoque. E AQUI, e so aqui, que o estoque
+# muda de verdade - repositories so sabem gravar/ler, nao decidem nada; o agente de IA
+# (app/agent/tools.py) so chama essas funcoes, nunca grava no banco direto.
 from decimal import Decimal
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -48,6 +51,8 @@ async def listar_catalogo(
 
 
 async def listar_categorias(db: AsyncSession) -> list[str]:
+    """So repassa pro repository - existe aqui pra API nunca chamar o repository
+    direto, sempre passando pela camada de servico."""
     return await produto_repository.list_categorias(db)
 
 
@@ -155,6 +160,9 @@ async def repor_estoque(
 
 
 async def criar_produto(db: AsyncSession, dados: ProdutoCreate) -> Produto:
+    """Cadastro de produto novo (painel interno). Confere SKU duplicado antes de
+    inserir porque e mais claro pro usuario do que deixar o banco rejeitar pela
+    constraint `unique=True` do model."""
     try:
         existente = await produto_repository.get_by_sku(db, dados.sku)
         if existente is not None:
@@ -171,6 +179,8 @@ async def criar_produto(db: AsyncSession, dados: ProdutoCreate) -> Produto:
 
 
 async def atualizar_produto(db: AsyncSession, produto_id: int, dados: ProdutoUpdate) -> Produto:
+    """Edita cadastro/preco de um produto existente - nunca mexe em
+    quantidade_atual (esse campo so muda via registrar_pedido/repor_estoque)."""
     try:
         produto = await produto_repository.get_by_id(db, produto_id)
         if produto is None:

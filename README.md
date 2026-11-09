@@ -2,20 +2,51 @@
 
 > Agente de IA via chat para controle de estoque de uma empresa de materiais de construção (blocos, cimento, areia, ferramentas). O agente sempre sabe o número certo de estoque porque toda entrada/saída passa por ele — sem contagem manual.
 
-## Fase atual: Fase 1 — Motor de estoque + chat (back-end e front-end funcionais)
+## Estrutura do projeto
 
-- [x] Estrutura de pastas e `CLAUDE.md`
+O projeto é dividido em 3 partes **separadas**, que conversam só por HTTP (nunca código misturado no mesmo arquivo):
+
+| Pasta | O que é | Linguagem |
+|---|---|---|
+| [`app/`](./app) | **Back-end** — API, regra de negócio, agente de IA | Python (FastAPI) |
+| [`frontend/`](./frontend) | **Front-end** — telas, loja, painel interno | TypeScript (React/Next.js) |
+| [`migrations/`](./migrations) + Docker (`db`) | **Banco de dados** — estrutura das tabelas e dados | PostgreSQL + Alembic |
+
+Dentro do back-end (`app/`), as camadas também são separadas:
+
+```
+app/
+├── api/            rotas HTTP (o que o front-end chama)
+├── services/       regra de negócio (ex: "só confirma pedido se tiver estoque")
+├── agent/          agente de IA (chat) — só escolhe ferramentas, nunca gera SQL/código livre
+├── repositories/   acesso ao banco de dados
+├── models/         tabelas do banco (SQLAlchemy) + validação de dados (Pydantic)
+└── core/           configuração, conexão com banco, logging
+```
+
+Pastas como `__pycache__/`, `.venv/`, `node_modules/` e `.next/` **não são código** — são arquivos gerados automaticamente ao rodar o projeto (cache do Python, dependências instaladas). Elas não entram no Git (ver `.gitignore`) e ficam ocultas no explorer do VSCode (ver `.vscode/settings.json`).
+
+## Status atual do projeto
+
+- [x] Estrutura de pastas e guia de workflow do projeto
 - [x] Repositório criado na organização GitHub
 - [x] Stack definida: FastAPI + SQLAlchemy/Alembic + PostgreSQL (pgvector reservado) + Groq + React/Next.js
-- [x] Banco de dados + migration inicial (5 tabelas: produtos, fornecedores, pedidos, itens_pedido, movimentacoes_estoque)
+- [x] Banco de dados + migrations (produtos, fornecedores, pedidos, itens_pedido, movimentacoes_estoque, usuarios)
 - [x] Camada de serviço com regra de negócio (pedido só confirma se TODOS os itens tiverem estoque)
 - [x] Agente de IA via LangChain (tool-calling, sem execução de código/SQL livre)
-- [x] API FastAPI (`/health`, `/produtos`, `/pedidos`, `/chat`)
-- [x] Frontend React/Next.js (chat + painel de estoque)
-- [x] Testes unitários da camada de serviço (5/5 passando)
-- [ ] Deploy em homologação
+- [x] Autenticação do painel interno (login + JWT)
+- [x] CRUD de produtos (cadastro, edição, promoção/imagem) no painel interno
+- [x] Loja pública com catálogo paginado, categorias, carrinho e fechamento de pedido
+- [x] API FastAPI (`/health`, `/auth`, `/produtos`, `/pedidos`, `/chat`)
+- [x] Frontend React/Next.js (loja pública, painel interno, login, chat)
+- [x] Código comentado em português (back-end e front-end)
+- [x] CI rodando lint (ruff/eslint) e testes automaticamente a cada push/PR
+- [x] Testes unitários da camada de serviço e autenticação
+- [ ] Testes de integração contra Postgres real (`tests/integration/` ainda vazio)
+- [ ] Deploy em homologação e produção (VPS, Nginx, HTTPS, workflows de deploy)
+- [ ] Relatório final do projeto (modelo ABNT em `docsprojeto/`)
 
-Roadmap completo em [`CLAUDE.md`](./CLAUDE.md), seção 10. Detalhes de papéis/responsabilidades em [`docs/plano-de-trabalho.pdf`](./docs/plano-de-trabalho.pdf).
+Roadmap completo em [`GUIA_PROJETO.md`](./GUIA_PROJETO.md), seção 10. Detalhes de papéis/responsabilidades em [`docs/plano-de-trabalho.pdf`](./docs/plano-de-trabalho.pdf) — **ainda com os campos "Responsável" em branco, falta o time preencher com os nomes de cada um**.
 
 ## Stack
 

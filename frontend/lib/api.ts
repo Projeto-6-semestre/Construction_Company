@@ -10,8 +10,13 @@ import type {
   ProdutoUpdateInput,
 } from "@/types/api";
 
+// Todas as funcoes deste arquivo chamam a API do back-end (FastAPI, em Python).
+// E a UNICA camada do front-end que fala HTTP com o back-end - telas e componentes
+// nunca fazem fetch direto, sempre passam por aqui.
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 
+// Erro customizado lancado quando a API responde com status de erro (4xx/5xx).
+// Guarda o status HTTP e o corpo da resposta pra quem chamou decidir como tratar.
 export class ApiError extends Error {
   constructor(
     message: string,
@@ -23,11 +28,14 @@ export class ApiError extends Error {
   }
 }
 
+// Monta o cabecalho "Authorization: Bearer <token>" pras rotas que exigem login
+// (painel interno). Se nao tiver token salvo, manda sem header - a API que recusa.
 function authHeaders(): Record<string, string> {
   const token = getToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+// Login do painel interno: manda usuario/senha, recebe o token JWT de volta.
 export async function login(username: string, senha: string): Promise<string> {
   const res = await fetch(`${API_BASE_URL}/auth/login`, {
     method: "POST",
@@ -41,6 +49,8 @@ export async function login(username: string, senha: string): Promise<string> {
   return dados.access_token as string;
 }
 
+// Lista de produtos pro painel interno (exige login). Pode filtrar por categoria
+// ou so os que estao abaixo da quantidade minima (alerta de reposicao).
 export async function getProdutos(params?: {
   categoria?: string;
   abaixoDoMinimo?: boolean;
@@ -59,6 +69,7 @@ export async function getProdutos(params?: {
   return res.json();
 }
 
+// Cadastra um produto novo no estoque (painel interno). Erro 409 = SKU repetido.
 export async function criarProduto(dados: ProdutoCreateInput): Promise<Produto> {
   const res = await fetch(`${API_BASE_URL}/produtos`, {
     method: "POST",
@@ -73,6 +84,7 @@ export async function criarProduto(dados: ProdutoCreateInput): Promise<Produto> 
   return res.json();
 }
 
+// Edita um produto existente (painel interno) - so manda os campos que mudaram.
 export async function atualizarProduto(id: number, dados: ProdutoUpdateInput): Promise<Produto> {
   const res = await fetch(`${API_BASE_URL}/produtos/${id}`, {
     method: "PATCH",
@@ -85,6 +97,8 @@ export async function atualizarProduto(id: number, dados: ProdutoUpdateInput): P
   return res.json();
 }
 
+// Lista as categorias que existem de verdade no catalogo (usado nos filtros da loja
+// publica). Nao exige login - rota publica.
 export async function getCategorias(): Promise<string[]> {
   const res = await fetch(`${API_BASE_URL}/produtos/categorias`, { cache: "no-store" });
   if (!res.ok) {
@@ -93,6 +107,8 @@ export async function getCategorias(): Promise<string[]> {
   return res.json();
 }
 
+// Catalogo paginado da loja publica (sem exigir login). Usado na pagina /loja
+// pra listar os produtos com filtro de categoria e paginacao.
 export async function getCatalogo(params: {
   categoria?: string;
   page?: number;
@@ -112,6 +128,9 @@ export async function getCatalogo(params: {
   return res.json();
 }
 
+// Finaliza um pedido da loja publica (conteudo do carrinho). Erro 409 = algum
+// item do carrinho nao tem estoque suficiente - o back-end valida tudo antes de
+// gravar qualquer coisa, entao ou o pedido inteiro entra, ou nada entra.
 export async function postPedido(
   clienteNome: string,
   itens: ItemPedidoInput[],
@@ -132,6 +151,8 @@ export async function postPedido(
   return res.json();
 }
 
+// Manda a pergunta do usuario (+ historico da conversa) pro agente de IA no
+// back-end e recebe a resposta em texto. Usado no chat do painel interno.
 export async function postChat(pergunta: string, historico: ChatMessage[]): Promise<ChatResponse> {
   const res = await fetch(`${API_BASE_URL}/chat`, {
     method: "POST",

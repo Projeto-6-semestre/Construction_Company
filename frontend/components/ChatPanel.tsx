@@ -12,6 +12,8 @@ const SUGESTOES = [
   "Registrar pedido de 100 blocos BLOCO-09 pro cliente Joao",
 ];
 
+// Painel de chat com o agente de IA (painel interno). Guarda o historico da
+// conversa em memoria (perde ao recarregar a pagina - sem persistencia).
 export function ChatPanel() {
   const [mensagens, setMensagens] = useState<ChatMessage[]>([
     {
@@ -25,6 +27,9 @@ export function ChatPanel() {
   const [erro, setErro] = useState<string | null>(null);
   const listRef = useRef<HTMLDivElement>(null);
 
+  // Envia a pergunta pro back-end junto com o historico (pra IA ter contexto da
+  // conversa) e adiciona a resposta na lista. Usado tanto pelo input quanto pelos
+  // botoes de sugestao.
   async function enviar(texto: string) {
     const textoLimpo = texto.trim();
     if (!textoLimpo || enviando) return;

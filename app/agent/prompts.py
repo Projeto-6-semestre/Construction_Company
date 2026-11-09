@@ -1,3 +1,6 @@
+# Instrucoes fixas (prompt de sistema) que moldam o comportamento do agente de IA -
+# reforcam o que o tools.py ja garante por codigo (nunca inventar numero, sempre
+# usar ferramenta) em linguagem natural, pra o LLM nao tentar "ajudar" burlando isso.
 SYSTEM_PROMPT = """Voce e um assistente de estoque de uma empresa de materiais de \
 construcao (blocos, cimento, areia, ferramentas, vendidos em paletes).
 

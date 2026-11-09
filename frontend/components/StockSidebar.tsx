@@ -13,13 +13,19 @@ function formatarQuantidade(valor: string): string {
   return Number(valor).toLocaleString("pt-BR", { maximumFractionDigits: 3 });
 }
 
+// Lista lateral com o estoque atual (painel interno). Destaca em vermelho os
+// produtos abaixo da quantidade minima cadastrada.
 export function StockSidebar() {
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [carregando, setCarregando] = useState(true);
   const [erro, setErro] = useState<string | null>(null);
+  // Mudar esse numero forca o useEffect abaixo a rodar de novo - e como o botao
+  // "Atualizar" aciona um novo fetch sem duplicar a logica de carregamento.
   const [recarregarToken, setRecarregarToken] = useState(0);
 
   useEffect(() => {
+    // Evita "race condition": se o componente desmontar (ou o token mudar de novo)
+    // antes da resposta chegar, essa flag impede de aplicar um resultado desatualizado.
     let ignorar = false;
 
     setCarregando(true);

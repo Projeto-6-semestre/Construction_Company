@@ -1,0 +1,24 @@
+services:
+  - type: web
+    name: estoque-construcao-api
+    runtime: python
+    plan: free
+    buildCommand: pip install uv && uv sync --frozen --no-group dev
+    preDeployCommand: uv run alembic upgrade head
+    startCommand: uv run uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: ENV
+        value: producao
+      - key: DEBUG
+        value: "false"
+      # Preencher manualmente no dashboard do Render (Settings > Environment) -
+      # nunca commitar valor real aqui. DATABASE_URL vem do banco Neon,
+      # CORS_ALLOW_ORIGINS e a URL do frontend publicado na Vercel.
+      - key: DATABASE_URL
+        sync: false
+      - key: GROQ_API_KEY
+        sync: false
+      - key: JWT_SECRET
+        sync: false
+      - key: CORS_ALLOW_ORIGINS
+        sync: false

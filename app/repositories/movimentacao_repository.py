@@ -1,3 +1,4 @@
+# Camada de repositorio: so acesso a banco, sem regra de negocio.
 from decimal import Decimal
 
 from sqlalchemy.ext.asyncio import AsyncSession
@@ -15,6 +16,8 @@ async def registrar(
     motivo: str | None = None,
     fornecedor_id: int | None = None,
 ) -> MovimentacaoEstoque:
+    """Grava uma linha no historico de entrada/saida - e isso que fica como
+    auditoria de tudo que mexeu no estoque, mesmo que o produto mude depois."""
     movimentacao = MovimentacaoEstoque(
         produto_id=produto_id,
         tipo=tipo,
