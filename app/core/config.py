@@ -15,8 +15,12 @@ class Settings(BaseSettings):
     app_host: str = "0.0.0.0"
     app_port: int = 8000
 
+    # String de conexao assincrona do SQLAlchemy, ex:
+    # postgresql+asyncpg://usuario:senha@host:5432/banco
     database_url: str
 
+    # Credenciais/config do provedor de LLM (Groq, endpoint compativel com a API da
+    # OpenAI) usado pelo agente de IA em app/agent/llm.py.
     groq_api_key: str
     llm_model: str = "openai/gpt-oss-120b"
     llm_base_url: str = "https://api.groq.com/openai/v1"

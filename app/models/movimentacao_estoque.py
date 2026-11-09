@@ -33,7 +33,10 @@ class MovimentacaoEstoque(Base):
         nullable=False,
     )
     quantidade: Mapped[Decimal] = mapped_column(Numeric(12, 3), nullable=False)
+    # Pra ENTRADA fica em branco normalmente; pra SAIDA costuma citar o pedido.
     motivo: Mapped[str | None] = mapped_column(String(300), nullable=True)
+    # So preenchido em ENTRADA (de qual fornecedor veio o material). SET NULL: se o
+    # fornecedor for removido, o historico da movimentacao continua existindo.
     fornecedor_id: Mapped[int | None] = mapped_column(
         ForeignKey("fornecedores.id", ondelete="SET NULL"), nullable=True
     )

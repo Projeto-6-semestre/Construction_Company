@@ -1,10 +1,15 @@
+# Fixtures compartilhadas pelos testes unitarios - pytest carrega este arquivo
+# automaticamente (nome reservado `conftest.py`), sem precisar de import explicito
+# nos arquivos de teste.
 from decimal import Decimal
 
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import async_sessionmaker, create_async_engine
 
+from app.core.security import hash_senha
 from app.models.base import Base
 from app.models.produto import Produto
+from app.models.usuario import Usuario
 
 
 @pytest_asyncio.fixture
@@ -33,6 +38,8 @@ def make_produto(
     quantidade_minima: Decimal | int = 10,
     preco_unitario: Decimal | int = 2,
 ) -> Produto:
+    """Helper pra criar um Produto de teste sem repetir todos os campos obrigatorios
+    em cada teste - so passa o que for relevante pro caso testado."""
     return Produto(
         sku=sku,
         nome=nome,
@@ -42,3 +49,9 @@ def make_produto(
         quantidade_minima=Decimal(quantidade_minima),
         preco_unitario=Decimal(preco_unitario),
     )
+
+
+def make_usuario(*, username: str = "admin", senha: str = "senha-forte-123") -> Usuario:
+    """Helper pra criar um Usuario de teste com hash de senha de verdade (bcrypt),
+    nao um hash fake - senao testar `verificar_senha` nao teria sentido."""
+    return Usuario(username=username, password_hash=hash_senha(senha))

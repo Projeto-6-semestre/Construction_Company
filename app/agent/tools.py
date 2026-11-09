@@ -33,6 +33,8 @@ def _formatar_quantidade(valor: Decimal) -> str:
 
 
 def _format_produtos(produtos: list[Produto]) -> str:
+    """Texto simples pro LLM ler, nao JSON - o agente so precisa narrar isso pro
+    usuario, nao processar a estrutura."""
     if not produtos:
         return "Nenhum produto encontrado com esses filtros."
     linhas = [
@@ -54,6 +56,9 @@ def _format_estoque_insuficiente(itens) -> str:
     return f"Estoque insuficiente para concluir o pedido. Itens com falta: {detalhes}"
 
 
+# Schemas de argumento de cada ferramenta - o LangChain usa a `description` de cada
+# campo pra explicar ao LLM o que preencher ali, e valida o que o LLM mandou antes
+# de a funcao da tool rodar (ex: barra `quantidade` <= 0 antes de chegar no service).
 class ConsultarEstoqueArgs(BaseModel):
     sku: str | None = Field(default=None, description="SKU exato do produto, se souber.")
     categoria: str | None = Field(

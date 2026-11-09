@@ -15,6 +15,8 @@ ALGORITMO = "HS256"
 
 
 def hash_senha(senha_plana: str) -> str:
+    """bcrypt gera um salt aleatorio por chamada - o mesmo password_hash nunca se
+    repete pra senhas iguais, e o hash nunca e revertido pra senha original."""
     return bcrypt.hashpw(senha_plana.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
 
 
@@ -23,6 +25,8 @@ def verificar_senha(senha_plana: str, password_hash: str) -> bool:
 
 
 def criar_access_token(*, usuario_id: int, username: str) -> str:
+    """JWT assinado com jwt_secret - o front manda esse token de volta em todo
+    request protegido, e o backend confere a assinatura em vez de guardar sessao."""
     settings = get_settings()
     agora = datetime.now(UTC)
     payload = {

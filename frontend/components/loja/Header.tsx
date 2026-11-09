@@ -9,6 +9,8 @@ interface Props {
   onAbrirCarrinho: () => void;
 }
 
+// Cabecalho fixo da loja publica: logo, navegacao e botao do carrinho com o
+// contador de itens.
 export function Header({ quantidadeCarrinho, onAbrirCarrinho }: Props) {
   return (
     <header className={styles.header}>

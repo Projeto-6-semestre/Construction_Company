@@ -1,3 +1,4 @@
+# Camada de servico: regra de negocio da autenticacao do painel interno.
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.security import criar_access_token, verificar_senha
@@ -18,4 +19,5 @@ async def autenticar(db: AsyncSession, *, username: str, senha: str) -> Usuario 
 
 
 def gerar_token(usuario: Usuario) -> str:
+    """Gera o JWT que o front guarda e manda em todo request protegido do painel."""
     return criar_access_token(usuario_id=usuario.id, username=usuario.username)

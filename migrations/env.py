@@ -1,11 +1,13 @@
+# Arquivo de configuracao do Alembic (gerado pelo template async, `alembic init -t
+# async migrations`) - liga a URL do banco e os models reais a ferramenta de
+# migration. O conteudo das migrations de verdade fica em migrations/versions/*.py.
 import asyncio
 from logging.config import fileConfig
 
+from alembic import context
 from sqlalchemy import pool
 from sqlalchemy.engine import Connection
 from sqlalchemy.ext.asyncio import async_engine_from_config
-
-from alembic import context
 
 # Precisa importar app.models (nao so app.models.base) para que todas as tabelas
 # se registrem em Base.metadata antes do autogenerate rodar - senao ele nao ve nada.

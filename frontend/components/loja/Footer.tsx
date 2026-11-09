@@ -6,6 +6,8 @@ import styles from "./Footer.module.css";
 const CATEGORIAS_DESTAQUE = ["bloco", "cimento", "areia", "ferramenta"];
 const ANO_ATUAL = new Date().getFullYear();
 
+// Rodape da loja publica: links de categorias em destaque, links institucionais
+// e aviso de direitos autorais com o ano atual calculado automaticamente.
 export function Footer() {
   return (
     <footer className={styles.footer}>

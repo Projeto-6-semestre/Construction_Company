@@ -17,6 +17,8 @@ export const metadata: Metadata = {
   description: "Agente de IA para controle de estoque de materiais de construcao",
 };
 
+// Layout raiz do Next.js - envolve TODAS as paginas (fontes, <html>, <body>,
+// metadados de titulo/descricao da aba do navegador).
 export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="pt-BR" className={`${geistSans.variable} ${geistMono.variable}`}>

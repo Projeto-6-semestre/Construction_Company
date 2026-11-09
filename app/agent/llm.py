@@ -1,3 +1,4 @@
+# Cliente do LLM que o agente usa - unico lugar do projeto que fala com o provedor.
 from functools import lru_cache
 
 from langchain_openai import ChatOpenAI

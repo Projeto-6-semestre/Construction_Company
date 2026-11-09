@@ -1,3 +1,5 @@
+# Ponto de entrada do chat: monta o agente (LLM + ferramentas + prompt) e conversa
+# com ele. E a unica funcao que app/api/routes/chat.py chama.
 from langchain.agents import create_agent
 from sqlalchemy.ext.asyncio import AsyncSession
 
@@ -15,6 +17,10 @@ def build_agent(db: AsyncSession):
 
 
 async def ask(db: AsyncSession, pergunta: str, historico: list[ChatMessage] | None = None) -> str:
+    """Manda a pergunta (+ historico da conversa, que o backend nao guarda em sessao)
+    pro agente e devolve so o texto da resposta final. O agente pode chamar uma ou
+    mais ferramentas no meio do caminho antes de responder - isso fica escondido
+    aqui dentro, o chamador so ve pergunta -> resposta."""
     agent = build_agent(db)
 
     messages = [{"role": m.role, "content": m.content} for m in (historico or [])]

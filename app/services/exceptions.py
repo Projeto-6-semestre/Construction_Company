@@ -1,3 +1,6 @@
+# Excecoes de dominio da camada de servico. As rotas da API (app/api/routes/*.py)
+# capturam essas excecoes e convertem pra status HTTP (404, 409, etc.); as tools do
+# agente (app/agent/tools.py) capturam e devolvem como texto pro LLM explicar ao usuario.
 from decimal import Decimal
 from typing import NamedTuple
 

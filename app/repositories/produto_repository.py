@@ -1,3 +1,4 @@
+# Camada de repositorio: so acesso a banco, sem regra de negocio.
 from decimal import Decimal
 
 from sqlalchemy import func, select
@@ -11,6 +12,8 @@ async def get_by_id(db: AsyncSession, produto_id: int) -> Produto | None:
 
 
 async def get_by_sku(db: AsyncSession, sku: str) -> Produto | None:
+    """Leitura simples (sem lock) - usada fora de fluxo de escrita, ex: GET /produtos.
+    Pra fluxo de pedido (escrita), usar get_by_sku_for_update abaixo."""
     result = await db.execute(select(Produto).where(Produto.sku == sku))
     return result.scalar_one_or_none()
 
@@ -62,6 +65,8 @@ async def list_produtos_paginado(
 
 
 async def list_categorias(db: AsyncSession) -> list[str]:
+    """Lista de categorias distintas que existem hoje no catalogo - usada pro
+    filtro/menu de categorias da loja, nao e uma lista fixa cadastrada a parte."""
     stmt = select(Produto.categoria).distinct().order_by(Produto.categoria)
     result = await db.execute(stmt)
     return list(result.scalars().all())
@@ -74,6 +79,7 @@ def aplicar_delta_quantidade(produto: Produto, delta: Decimal) -> None:
 
 
 async def criar(db: AsyncSession, **campos) -> Produto:
+    """Cadastro de produto novo no painel interno (POST /produtos)."""
     produto = Produto(**campos)
     db.add(produto)
     await db.flush()

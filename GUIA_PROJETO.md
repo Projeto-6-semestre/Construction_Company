@@ -1,16 +1,16 @@
-# CLAUDE.md — Guia de Workflow do Projeto
+# Guia de Workflow do Projeto
 
 > **Status:** rascunho v0.1 — construído a partir dos guias internos (`docs servico/`) e da análise do projeto de referência `wmsbox-agent`. Ainda precisa ser validado e ajustado pelo time antes de virar regra definitiva. Este arquivo é vivo: sempre que o time decidir algo novo (ou mudar de ideia), atualiza aqui.
 >
 > **Stack do projeto:** Python + RAG (inspirado no `wmsbox-agent`, mas evoluindo bem além dele — ver seção 9).
 > **Organização GitHub:** `Projeto-6-semestre` (repositório privado).
-> **Quem sobe código:** o time, manualmente. Claude Code não faz commit/push/deploy — só ajuda a planejar, documentar e (quando pedido) escrever código local.
+> **Quem sobe código:** o time, manualmente. Push e deploy nunca são automáticos nem feitos por terceiros — só o time decide quando subir algo.
 
 ---
 
 ## 1. Papel deste documento
 
-Este é o documento de referência que qualquer pessoa do time (ou o Claude Code, quando estiver ajudando alguém do time) deve consultar para saber **como trabalhamos aqui**: como o Git/GitHub está organizado, como fazemos deploy, como lidamos com migrations de banco, e qual a ordem de passos até o primeiro deploy no ar.
+Este é o documento de referência que qualquer pessoa do time deve consultar para saber **como trabalhamos aqui**: como o Git/GitHub está organizado, como fazemos deploy, como lidamos com migrations de banco, e qual a ordem de passos até o primeiro deploy no ar.
 
 As ideias aqui vieram de projetos reais anteriores (WMS PRO e chat_ia, documentados em `docs servico/`), adaptadas de Node/PHP para **Python**, e da análise crítica do `wmsbox-agent` (o que ele faz bem, e principalmente o que faltava nele e vamos evitar repetir.
 
@@ -351,10 +351,14 @@ Ordem recomendada para o time (ajustável, mas é uma sequência lógica testada
 ## 11. Pendências / decisões em aberto para o time discutir
 
 - [x] Framework web: **FastAPI** (decidido e implementado, Fase 1).
-- [x] Provedor de LLM: **Groq** (`llama-3.3-70b-versatile`, decidido e implementado, Fase 1 — trocado de Hugging Face após a HF remover o crédito gratuito em 15/10/2026).
+- [x] Provedor de LLM: **Groq** (decidido e implementado, Fase 1 — trocado de Hugging Face após a HF remover o crédito gratuito em 15/10/2026).
 - [x] Empacotamento: **`pyproject.toml` + `uv`** (decidido e implementado, Fase 1).
+- [x] Autenticação do painel interno: **JWT + bcrypt** (decidido e implementado).
+- [x] CI com lint + testes automáticos a cada push/PR na `main` (`.github/workflows/ci.yml`).
 - [ ] Nome definitivo do repositório (atualmente `Construction_Company`).
 - [ ] Vector store/RAG documental de verdade (pgvector já está instalado na imagem do banco, mas sem uso ainda) — fica pra quando o projeto precisar buscar em documentos não-estruturados (manuais, notas), não pro controle de estoque em si (que é dado estruturado, resolvido com SQL via as ferramentas do agente).
+- [ ] Testes de integração contra Postgres real (`tests/integration/` só tem o esqueleto, nunca foi usado).
 - [ ] Migration automática ou manual em produção (seção 6.3) — sugestão inicial: manual.
-- [ ] Onde hospedar (VPS próprio? Oracle Cloud free tier como o projeto de referência? outro?).
+- [ ] Onde hospedar (VPS próprio? Oracle Cloud free tier como o projeto de referência? outro?) — nenhum ambiente de homologação/produção existe ainda, só local/Docker local.
+- [ ] Nomes do time preenchidos no `docs/plano-de-trabalho.pdf` (hoje os campos "Responsável" estão todos em branco).
 - [ ] Regras adicionais de code review / convenção de commit que o time quiser formalizar aqui.
