@@ -56,6 +56,12 @@ async def listar_categorias(db: AsyncSession) -> list[str]:
     return await produto_repository.list_categorias(db)
 
 
+async def listar_pedidos(db: AsyncSession) -> list[Pedido]:
+    """Pedidos feitos pela loja (painel interno acompanhar). So repassa pro
+    repository, mesma razao de listar_categorias."""
+    return await pedido_repository.list_pedidos(db)
+
+
 async def registrar_pedido(
     db: AsyncSession,
     *,

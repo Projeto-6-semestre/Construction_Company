@@ -30,6 +30,9 @@ function PainelInterno() {
           <Link href="/produtos" className={styles.linkLoja}>
             Gerenciar produtos
           </Link>
+          <Link href="/pedidos" className={styles.linkLoja}>
+            Pedidos
+          </Link>
           <Link href="/loja" className={styles.linkLoja}>
             Ver loja →
           </Link>

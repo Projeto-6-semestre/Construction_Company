@@ -9,7 +9,7 @@ from sqlalchemy import select
 from app.models.item_pedido import ItemPedido
 from app.models.movimentacao_estoque import MovimentacaoEstoque
 from app.models.pedido import Pedido
-from app.models.schemas import ItemPedidoCreate, ProdutoCreate, ProdutoUpdate
+from app.models.schemas import ItemPedidoCreate, PedidoRead, ProdutoCreate, ProdutoUpdate
 from app.services import estoque_service
 from app.services.exceptions import (
     EstoqueInsuficienteError,
@@ -136,6 +136,31 @@ async def test_repor_estoque_incrementa_corretamente(db_session):
     assert movimentacoes[0].tipo.value == "entrada"
     assert movimentacoes[0].quantidade == Decimal(15)
     assert movimentacoes[0].fornecedor_id is not None
+
+
+@pytest.mark.asyncio
+async def test_listar_pedidos_traz_mais_recente_primeiro_com_produto_aninhado(db_session):
+    produto = make_produto(sku="BLOCO-09", nome="Bloco de concreto 9 furos", quantidade_atual=100)
+    db_session.add(produto)
+    await db_session.commit()
+
+    primeiro = await estoque_service.registrar_pedido(
+        db_session, cliente_nome="Joao", itens=[ItemPedidoCreate(sku="BLOCO-09", quantidade=Decimal(5))]
+    )
+    segundo = await estoque_service.registrar_pedido(
+        db_session, cliente_nome="Maria", itens=[ItemPedidoCreate(sku="BLOCO-09", quantidade=Decimal(3))]
+    )
+
+    pedidos = await estoque_service.listar_pedidos(db_session)
+
+    assert [p.id for p in pedidos] == [segundo.id, primeiro.id]
+
+    # Serializa com o schema de resposta da API de verdade - confirma que o
+    # eager load (Pedido.itens -> ItemPedido.produto) é suficiente pra isso não
+    # estourar lazy-load fora da sessão, e que o nome/sku do produto aparece.
+    lido = PedidoRead.model_validate(pedidos[0])
+    assert lido.itens[0].produto.sku == "BLOCO-09"
+    assert lido.itens[0].produto.nome == "Bloco de concreto 9 furos"
 
 
 @pytest.mark.asyncio
