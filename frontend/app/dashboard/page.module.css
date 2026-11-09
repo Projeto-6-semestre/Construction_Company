@@ -1,0 +1,155 @@
+.main {
+  min-height: 100vh;
+  padding: 2rem clamp(1rem, 4vw, 3rem);
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  color: #f2f0ea;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.header h1 {
+  margin: 0 0 0.25rem;
+  font-size: clamp(1.4rem, 1.1rem + 1vw, 1.9rem);
+}
+
+.header p {
+  margin: 0;
+  color: #c4cad3;
+  font-size: 0.88rem;
+  max-width: 60ch;
+}
+
+.link {
+  color: #d9814c;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.link:hover {
+  text-decoration: underline;
+}
+
+.erro {
+  color: #f0a0a0;
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.estado {
+  color: #8b93a1;
+  font-size: 0.9rem;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+}
+
+.tile {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 1.1rem 1.25rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+}
+
+.tileLabel {
+  font-size: 0.78rem;
+  color: #c4cad3;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.tileValor {
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+.tileSub {
+  font-size: 0.78rem;
+  color: #8b93a1;
+}
+
+.graficoCard {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+
+.graficoCard h2 {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.secaoTitulo {
+  margin: 0 0 0.75rem;
+  font-size: 1rem;
+}
+
+.tabelaScroll {
+  overflow-x: auto;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.tabela {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.85rem;
+}
+
+.tabela th {
+  text-align: left;
+  color: #b7bec7;
+  font-weight: 500;
+  padding: 0.6rem 0.7rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  background: rgba(255, 255, 255, 0.04);
+}
+
+.tabela td {
+  padding: 0.5rem 0.7rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  vertical-align: middle;
+}
+
+.sku {
+  font-family: ui-monospace, monospace;
+  font-size: 0.78rem;
+  color: #8b93a1;
+}
+
+.tagEntrada,
+.tagSaida {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.02em;
+  border-radius: 999px;
+  padding: 0.15rem 0.6rem;
+  display: inline-block;
+}
+
+.tagEntrada {
+  color: #3987e5;
+  background: rgba(57, 135, 229, 0.14);
+}
+
+.tagSaida {
+  color: #d9814c;
+  background: rgba(217, 89, 38, 0.14);
+}

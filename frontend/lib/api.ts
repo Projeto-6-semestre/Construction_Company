@@ -2,6 +2,7 @@ import { getToken } from "@/lib/auth";
 import type {
   ChatMessage,
   ChatResponse,
+  DashboardResponse,
   ItemPedidoInput,
   PedidoResponse,
   Produto,
@@ -160,6 +161,19 @@ export async function getPedidos(): Promise<PedidoResponse[]> {
   });
   if (!res.ok) {
     throw new ApiError("Nao foi possivel carregar os pedidos.", res.status);
+  }
+  return res.json();
+}
+
+// Resumo de entradas/saidas de estoque (painel interno, exige login) - totais,
+// quebra por categoria e movimentacoes recentes. Base da tela /dashboard.
+export async function getDashboard(): Promise<DashboardResponse> {
+  const res = await fetch(`${API_BASE_URL}/dashboard`, {
+    cache: "no-store",
+    headers: authHeaders(),
+  });
+  if (!res.ok) {
+    throw new ApiError("Nao foi possivel carregar o dashboard.", res.status);
   }
   return res.json();
 }

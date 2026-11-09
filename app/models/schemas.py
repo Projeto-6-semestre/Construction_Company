@@ -7,7 +7,7 @@ from typing import Literal
 
 from pydantic import BaseModel, ConfigDict, Field
 
-from app.models.enums import StatusPedido
+from app.models.enums import StatusPedido, TipoMovimentacao
 
 # --- Produto ---
 
@@ -163,3 +163,46 @@ class TokenResponse(BaseModel):
 
     access_token: str
     token_type: str = "bearer"
+
+
+# --- Dashboard (entradas/saidas de estoque) ---
+
+
+class FornecedorResumoRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    nome: str
+
+
+class MovimentacaoEstoqueRead(BaseModel):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    tipo: TipoMovimentacao
+    quantidade: Decimal
+    motivo: str | None
+    criado_em: datetime
+    produto: ProdutoResumoRead
+    fornecedor: FornecedorResumoRead | None
+
+
+class CategoriaResumoRead(BaseModel):
+    """Entradas x saidas somadas por categoria, em valor estimado (quantidade
+    vezes o PRECO ATUAL do produto - a movimentacao nao guarda o preco de quando
+    aconteceu, entao isso e uma aproximacao, nao um valor contabil exato)."""
+
+    categoria: str
+    valor_entradas: Decimal
+    valor_saidas: Decimal
+
+
+class DashboardRead(BaseModel):
+    """Resumo pro painel: totais gerais, quebra por categoria (pro grafico) e as
+    movimentacoes mais recentes (pra tabela de historico)."""
+
+    total_entradas_qtd: Decimal
+    total_saidas_qtd: Decimal
+    valor_entradas: Decimal
+    valor_saidas: Decimal
+    por_categoria: list[CategoriaResumoRead]
+    recentes: list[MovimentacaoEstoqueRead]

@@ -8,7 +8,13 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from app.models.enums import StatusPedido, TipoMovimentacao
 from app.models.pedido import Pedido
 from app.models.produto import Produto
-from app.models.schemas import ItemPedidoCreate, ProdutoCreate, ProdutoUpdate
+from app.models.schemas import (
+    CategoriaResumoRead,
+    DashboardRead,
+    ItemPedidoCreate,
+    ProdutoCreate,
+    ProdutoUpdate,
+)
 from app.repositories import (
     fornecedor_repository,
     movimentacao_repository,
@@ -60,6 +66,50 @@ async def listar_pedidos(db: AsyncSession) -> list[Pedido]:
     """Pedidos feitos pela loja (painel interno acompanhar). So repassa pro
     repository, mesma razao de listar_categorias."""
     return await pedido_repository.list_pedidos(db)
+
+
+async def obter_dashboard(db: AsyncSession, *, limite_recentes: int = 30) -> DashboardRead:
+    """Resumo de entrada/saida pro painel: totais gerais, quebra por categoria
+    (valor estimado = quantidade * preco ATUAL do produto, ja que a movimentacao
+    nao guarda o preco de quando aconteceu) e as movimentacoes mais recentes.
+
+    Soma tudo em Python (nao em SQL agregado) de proposito: pro volume de dados
+    de um projeto como esse, e muito mais simples de escrever certo e de testar
+    do que um GROUP BY com CASE condicional, sem custo real de performance.
+    """
+    movimentacoes = await movimentacao_repository.list_todas(db)
+
+    total_entradas_qtd = Decimal(0)
+    total_saidas_qtd = Decimal(0)
+    valor_entradas = Decimal(0)
+    valor_saidas = Decimal(0)
+    por_categoria: dict[str, dict[str, Decimal]] = {}
+
+    for mov in movimentacoes:
+        valor = mov.quantidade * mov.produto.preco_unitario
+        categoria = por_categoria.setdefault(
+            mov.produto.categoria, {"valor_entradas": Decimal(0), "valor_saidas": Decimal(0)}
+        )
+        if mov.tipo == TipoMovimentacao.ENTRADA:
+            total_entradas_qtd += mov.quantidade
+            valor_entradas += valor
+            categoria["valor_entradas"] += valor
+        else:
+            total_saidas_qtd += mov.quantidade
+            valor_saidas += valor
+            categoria["valor_saidas"] += valor
+
+    return DashboardRead(
+        total_entradas_qtd=total_entradas_qtd,
+        total_saidas_qtd=total_saidas_qtd,
+        valor_entradas=valor_entradas,
+        valor_saidas=valor_saidas,
+        por_categoria=[
+            CategoriaResumoRead(categoria=nome, **valores)
+            for nome, valores in sorted(por_categoria.items())
+        ],
+        recentes=movimentacoes[:limite_recentes],
+    )
 
 
 async def registrar_pedido(
