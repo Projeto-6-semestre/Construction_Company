@@ -83,27 +83,30 @@ Foi assim que nasceu o **Agente de Estoque**: uma API que centraliza todo o cont
 <td width="33%" align="center">
 
 #### 🧑‍🤝‍🧑 Para o Cliente
-✅ Compra sem precisar ligar
-✅ Vê o estoque real na loja
-✅ Pedido confirmado na hora
+
+✅ Compra sem precisar ligar<br/>
+✅ Vê o estoque real na loja<br/>
+✅ Pedido confirmado na hora<br/>
 ✅ Resumo do pedido direto no WhatsApp
 
 </td>
 <td width="33%" align="center">
 
 #### 🏪 Para a Loja
-✅ Estoque sempre correto
-✅ Zero planilha solta
-✅ Histórico de toda movimentação
+
+✅ Estoque sempre correto<br/>
+✅ Zero planilha solta<br/>
+✅ Histórico de toda movimentação<br/>
 ✅ Dashboard pra "fazer as contas"
 
 </td>
 <td width="33%" align="center">
 
 #### 👷 Para a Equipe
-✅ Chat de IA tira dúvida rápida
-✅ Painel central de pedidos
-✅ Sem retrabalho de contagem manual
+
+✅ Chat de IA tira dúvida rápida<br/>
+✅ Painel central de pedidos<br/>
+✅ Sem retrabalho de contagem manual<br/>
 ✅ Login próprio e seguro
 
 </td>
