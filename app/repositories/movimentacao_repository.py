@@ -1,7 +1,9 @@
 # Camada de repositorio: so acesso a banco, sem regra de negocio.
 from decimal import Decimal
 
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.enums import TipoMovimentacao
 from app.models.movimentacao_estoque import MovimentacaoEstoque
@@ -28,3 +30,15 @@ async def registrar(
     db.add(movimentacao)
     await db.flush()
     return movimentacao
+
+
+async def list_todas(db: AsyncSession) -> list[MovimentacaoEstoque]:
+    """Todo o historico de entrada/saida, mais recente primeiro - base pro
+    dashboard (resumo e tabela). Ordena por id, nao por criado_em, pelo mesmo
+    motivo do pedido_repository: timestamps podem empatar no mesmo segundo."""
+    result = await db.execute(
+        select(MovimentacaoEstoque)
+        .options(selectinload(MovimentacaoEstoque.produto), selectinload(MovimentacaoEstoque.fornecedor))
+        .order_by(MovimentacaoEstoque.id.desc())
+    )
+    return list(result.scalars().all())

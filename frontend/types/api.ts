@@ -70,6 +70,33 @@ export interface PedidoResponse {
   }[];
 }
 
+// --- Dashboard (entradas/saidas de estoque) ---
+
+export interface MovimentacaoResponse {
+  id: number;
+  tipo: "entrada" | "saida";
+  quantidade: string;
+  motivo: string | null;
+  criado_em: string;
+  produto: { sku: string; nome: string };
+  fornecedor: { nome: string } | null;
+}
+
+export interface CategoriaResumo {
+  categoria: string;
+  valor_entradas: string;
+  valor_saidas: string;
+}
+
+export interface DashboardResponse {
+  total_entradas_qtd: string;
+  total_saidas_qtd: string;
+  valor_entradas: string;
+  valor_saidas: string;
+  por_categoria: CategoriaResumo[];
+  recentes: MovimentacaoResponse[];
+}
+
 // Uma mensagem do historico do chat - "user" = o que a pessoa digitou,
 // "assistant" = o que o agente de IA respondeu.
 export interface ChatMessage {
