@@ -164,6 +164,42 @@ async def test_listar_pedidos_traz_mais_recente_primeiro_com_produto_aninhado(db
 
 
 @pytest.mark.asyncio
+async def test_obter_dashboard_soma_entradas_e_saidas_por_categoria(db_session):
+    bloco = make_produto(
+        sku="BLOCO-09", categoria="bloco", quantidade_atual=100, preco_unitario=Decimal(2)
+    )
+    cimento = make_produto(
+        sku="CIMENTO-50KG", categoria="cimento", quantidade_atual=100, preco_unitario=Decimal(40)
+    )
+    db_session.add_all([bloco, cimento])
+    await db_session.commit()
+
+    # Saida: 10 blocos a R$2 = R$20.
+    await estoque_service.registrar_pedido(
+        db_session, cliente_nome="Cliente X", itens=[ItemPedidoCreate(sku="BLOCO-09", quantidade=Decimal(10))]
+    )
+    # Entrada: 5 sacos de cimento a R$40 = R$200.
+    await estoque_service.repor_estoque(
+        db_session, sku="CIMENTO-50KG", quantidade=Decimal(5), fornecedor_nome="Fornecedor Y"
+    )
+
+    dashboard = await estoque_service.obter_dashboard(db_session)
+
+    assert dashboard.total_saidas_qtd == Decimal(10)
+    assert dashboard.total_entradas_qtd == Decimal(5)
+    assert dashboard.valor_saidas == Decimal(20)
+    assert dashboard.valor_entradas == Decimal(200)
+
+    por_categoria = {c.categoria: c for c in dashboard.por_categoria}
+    assert por_categoria["bloco"].valor_saidas == Decimal(20)
+    assert por_categoria["bloco"].valor_entradas == Decimal(0)
+    assert por_categoria["cimento"].valor_entradas == Decimal(200)
+    assert por_categoria["cimento"].valor_saidas == Decimal(0)
+
+    assert len(dashboard.recentes) == 2
+
+
+@pytest.mark.asyncio
 async def test_listar_catalogo_pagina_corretamente_e_devolve_total_geral(db_session):
     # Nomes escolhidos de proposito pra ordem alfabetica ficar previsivel
     # (list_produtos_paginado ordena por Produto.nome).
