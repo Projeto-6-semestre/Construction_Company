@@ -151,6 +151,19 @@ export async function postPedido(
   return res.json();
 }
 
+// Lista os pedidos feitos na loja, mais recentes primeiro (painel interno,
+// exige login) - pra equipe acompanhar o que os clientes compraram.
+export async function getPedidos(): Promise<PedidoResponse[]> {
+  const res = await fetch(`${API_BASE_URL}/pedidos`, {
+    cache: "no-store",
+    headers: authHeaders(),
+  });
+  if (!res.ok) {
+    throw new ApiError("Nao foi possivel carregar os pedidos.", res.status);
+  }
+  return res.json();
+}
+
 // Manda a pergunta do usuario (+ historico da conversa) pro agente de IA no
 // back-end e recebe a resposta em texto. Usado no chat do painel interno.
 export async function postChat(pergunta: string, historico: ChatMessage[]): Promise<ChatResponse> {

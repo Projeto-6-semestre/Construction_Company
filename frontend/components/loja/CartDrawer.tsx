@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { ApiError, postPedido } from "@/lib/api";
+import { WHATSAPP_NUMERO } from "@/lib/contato";
 import type { Produto } from "@/types/api";
 import styles from "./CartDrawer.module.css";
 
@@ -48,6 +49,25 @@ export function CartDrawer({
 
   const total = itens.reduce((soma, item) => soma + precoEfetivo(item.produto) * item.quantidade, 0);
 
+  // Monta a mensagem do pedido pro WhatsApp da empresa - mesma logica de site
+  // de pizzaria: o pedido ja fica salvo no banco (pro painel interno ver),
+  // e o cliente manda esse resumo pra combinar pagamento/entrega.
+  function montarMensagemWhatsapp(pedidoId: number): string {
+    const linhas = itens.map(
+      (item) =>
+        `- ${item.quantidade}x ${item.produto.nome} (${formatarPreco(precoEfetivo(item.produto))}/${item.produto.unidade_medida})`,
+    );
+    return [
+      `Olá! Gostaria de confirmar meu pedido #${pedidoId}:`,
+      "",
+      ...linhas,
+      "",
+      `Total: ${formatarPreco(total)}`,
+      "",
+      `Nome: ${clienteNome.trim()}`,
+    ].join("\n");
+  }
+
   // Envia o pedido pra API. Se der 409 (estoque insuficiente), a mensagem de
   // erro da API ja vem pronta pra mostrar - ver postPedido em lib/api.ts.
   async function finalizar() {
@@ -61,6 +81,11 @@ export function CartDrawer({
       );
       setNumeroPedido(pedido.id);
       onPedidoConfirmado();
+      // Abre o WhatsApp numa aba nova com o pedido ja escrito - o cliente so
+      // confere e aperta enviar. Nao bloqueia a tela de sucesso se o navegador
+      // bloquear o popup, o pedido ja foi salvo de qualquer forma.
+      const url = `https://wa.me/${WHATSAPP_NUMERO}?text=${encodeURIComponent(montarMensagemWhatsapp(pedido.id))}`;
+      window.open(url, "_blank", "noopener,noreferrer");
     } catch (e) {
       setErro(e instanceof ApiError ? e.message : "Erro inesperado ao finalizar o pedido.");
     } finally {
@@ -83,7 +108,11 @@ export function CartDrawer({
         {numeroPedido !== null ? (
           <div className={styles.sucesso}>
             <p>✅ Pedido #{numeroPedido} confirmado!</p>
-            <p className={styles.sucessoDetalhe}>A equipe já foi notificada e vai separar seu material.</p>
+            <p className={styles.sucessoDetalhe}>
+              Abrimos o WhatsApp numa aba nova com o resumo do pedido — é só conferir e enviar pra
+              gente combinar pagamento e entrega. Se não abriu, seu navegador pode ter bloqueado o
+              pop-up.
+            </p>
             <button className={styles.botaoPrimario} onClick={onFechar}>
               Fechar
             </button>
@@ -134,6 +163,9 @@ export function CartDrawer({
                 onChange={(e) => setClienteNome(e.target.value)}
                 disabled={itens.length === 0}
               />
+              {!clienteNome.trim() && itens.length > 0 && (
+                <p className={styles.dica}>Preencha seu nome acima pra liberar o botão.</p>
+              )}
               {erro && <p className={styles.erro}>{erro}</p>}
               <button
                 className={styles.botaoPrimario}

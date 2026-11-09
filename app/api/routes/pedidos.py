@@ -2,12 +2,19 @@
 # mesma regra de negocio do estoque_service que a tool do agente usa.
 from fastapi import APIRouter, HTTPException
 
-from app.api.deps import DbSession
+from app.api.deps import AdminUser, DbSession
 from app.models.schemas import PedidoCreate, PedidoRead
 from app.services import estoque_service
 from app.services.exceptions import EstoqueInsuficienteError, ProdutoNaoEncontradoError
 
 router = APIRouter(prefix="/pedidos", tags=["pedidos"])
+
+
+@router.get("", response_model=list[PedidoRead])
+async def listar_pedidos(db: DbSession, _admin: AdminUser) -> list[PedidoRead]:
+    """Pedidos feitos na loja, mais recentes primeiro - painel interno
+    acompanhar o que os clientes compraram. Exige login."""
+    return await estoque_service.listar_pedidos(db)
 
 
 @router.post("", response_model=PedidoRead, status_code=201)
