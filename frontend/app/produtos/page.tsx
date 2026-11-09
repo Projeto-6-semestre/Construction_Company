@@ -8,6 +8,8 @@ import { iconeCategoria } from "@/lib/categorias";
 import type { Produto, ProdutoCreateInput } from "@/types/api";
 import styles from "./page.module.css";
 
+// Valores iniciais do formulario "Novo produto" - reaproveitado pra limpar o
+// formulario depois de cadastrar com sucesso.
 const PRODUTO_VAZIO: ProdutoCreateInput = {
   sku: "",
   nome: "",
@@ -18,6 +20,8 @@ const PRODUTO_VAZIO: ProdutoCreateInput = {
   preco_unitario: 0,
 };
 
+// Mostra a imagem do produto se tiver URL cadastrada, senao cai no icone
+// generico da categoria. Some a imagem quebrada automaticamente (onError).
 function Miniatura({ url, categoria }: { url: string; categoria: string }) {
   if (url) {
     // <img> simples em vez do componente Image do Next: aqui o valor muda a
@@ -38,6 +42,10 @@ function Miniatura({ url, categoria }: { url: string; categoria: string }) {
   return <span className={styles.miniaturaIcone}>{iconeCategoria(categoria)}</span>;
 }
 
+// Uma linha da tabela de produtos. Tem dois "modos": exibicao (so mostra os
+// dados) e edicao (vira formulario inline ao clicar em "Editar"). Quantidade
+// atual NUNCA e editavel aqui de proposito - ela so muda via movimentacao de
+// estoque (entrada/saida), controlada pelo back-end, nunca editada direto.
 function LinhaProduto({ produto, onSalvo }: { produto: Produto; onSalvo: (p: Produto) => void }) {
   const [editando, setEditando] = useState(false);
   const [form, setForm] = useState({
@@ -52,6 +60,8 @@ function LinhaProduto({ produto, onSalvo }: { produto: Produto; onSalvo: (p: Pro
   const [salvando, setSalvando] = useState(false);
   const [erro, setErro] = useState<string | null>(null);
 
+  // Envia so os campos editaveis pra API (PATCH). Campo vazio de promocao/imagem
+  // vira `null` explicito - "sem promocao" e diferente de "nao mudar esse campo".
   async function salvar() {
     setSalvando(true);
     setErro(null);
@@ -157,6 +167,8 @@ function LinhaProduto({ produto, onSalvo }: { produto: Produto; onSalvo: (p: Pro
   );
 }
 
+// Tela de gestao de produtos do painel interno: formulario de cadastro +
+// tabela editavel com todo o catalogo.
 function PainelProdutos() {
   const [produtos, setProdutos] = useState<Produto[]>([]);
   const [carregando, setCarregando] = useState(true);
@@ -165,6 +177,8 @@ function PainelProdutos() {
   const [criando, setCriando] = useState(false);
   const [erroCriar, setErroCriar] = useState<string | null>(null);
 
+  // Busca a lista completa de produtos de novo - chamada tanto no carregamento
+  // inicial quanto depois de cadastrar um produto novo.
   function carregar() {
     setCarregando(true);
     getProdutos()
@@ -190,6 +204,8 @@ function PainelProdutos() {
     }
   }
 
+  // Troca so o produto editado na lista em memoria (evita recarregar a tabela
+  // inteira da API de novo depois de salvar uma linha).
   function atualizarNaLista(produto: Produto) {
     setProdutos((atual) => atual.map((p) => (p.id === produto.id ? produto : p)));
   }

@@ -16,6 +16,8 @@ import styles from "./page.module.css";
 
 const TAMANHO_PAGINA = 8;
 
+// Tela da loja publica (rota /loja): catalogo paginado com filtro de
+// categoria, carrinho e secao institucional. Nao exige login.
 function LojaConteudo() {
   const searchParams = useSearchParams();
   const [categorias, setCategorias] = useState<string[]>([]);
@@ -30,13 +32,17 @@ function LojaConteudo() {
   const [carrinhoAberto, setCarrinhoAberto] = useState(false);
   const [itensCarrinho, setItensCarrinho] = useState<ItemCarrinho[]>([]);
 
+  // Carrega a lista de categorias uma unica vez (so pro filtro, nao depende da pagina).
   useEffect(() => {
     getCategorias()
       .then(setCategorias)
       .catch(() => {});
   }, []);
 
+  // Recarrega o catalogo sempre que a categoria ou a pagina mudam.
   useEffect(() => {
+    // Flag "ignorar": se o usuario trocar de categoria/pagina de novo antes dessa
+    // resposta chegar, essa chamada antiga nao deve mais sobrescrever o estado.
     let ignorar = false;
     setCarregando(true);
     setErro(null);
@@ -61,11 +67,14 @@ function LojaConteudo() {
     };
   }, [categoriaAtiva, pagina]);
 
+  // Troca de categoria sempre volta pra pagina 1 (senao poderia cair numa pagina
+  // que nao existe mais na categoria nova).
   function selecionarCategoria(categoria: string | null) {
     setCategoriaAtiva(categoria);
     setPagina(1);
   }
 
+  // Se o produto ja esta no carrinho, soma +1 na quantidade em vez de duplicar a linha.
   function adicionarAoCarrinho(produto: Produto) {
     setItensCarrinho((atual) => {
       const existente = atual.find((item) => item.produto.sku === produto.sku);
@@ -157,6 +166,8 @@ function LojaConteudo() {
   );
 }
 
+// Suspense e exigido pq LojaConteudo usa useSearchParams (le ?categoria= da URL),
+// que o Next.js so permite dentro de um boundary de Suspense.
 export default function LojaPage() {
   return (
     <Suspense fallback={null}>

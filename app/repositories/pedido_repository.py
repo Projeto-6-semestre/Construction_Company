@@ -1,3 +1,5 @@
+# Camada de repositorio: so acesso a banco, sem regra de negocio. Quem decide a
+# ordem (criar pedido -> adicionar itens -> baixar estoque) e estoque_service.py.
 from decimal import Decimal
 
 from sqlalchemy import select
@@ -24,6 +26,9 @@ async def add_item(db: AsyncSession, *, pedido_id: int, produto_id: int, quantid
 
 
 async def get_by_id(db: AsyncSession, pedido_id: int) -> Pedido | None:
+    # selectinload(Pedido.itens): carrega os itens do pedido numa segunda query
+    # já aqui, pra quem chamar essa funcao conseguir ler pedido.itens sem precisar
+    # de outra query depois (evita o erro classico de lazy-load fora da sessao async).
     result = await db.execute(
         select(Pedido).where(Pedido.id == pedido_id).options(selectinload(Pedido.itens))
     )

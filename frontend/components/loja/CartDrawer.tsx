@@ -5,6 +5,7 @@ import { ApiError, postPedido } from "@/lib/api";
 import type { Produto } from "@/types/api";
 import styles from "./CartDrawer.module.css";
 
+// Um item dentro do carrinho (estado vive na pagina da loja, CartDrawer so exibe/edita).
 export interface ItemCarrinho {
   produto: Produto;
   quantidade: number;
@@ -23,12 +24,15 @@ function formatarPreco(valor: number): string {
   return valor.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
 }
 
+// Preco que realmente vale pro produto: promocional se existir, senao o normal.
 function precoEfetivo(produto: Produto): number {
   return produto.preco_promocional !== null
     ? Number(produto.preco_promocional)
     : Number(produto.preco_unitario);
 }
 
+// Painel lateral (drawer) do carrinho: lista os itens, deixa editar quantidade
+// e finaliza o pedido chamando a API.
 export function CartDrawer({
   aberto,
   itens,
@@ -44,6 +48,8 @@ export function CartDrawer({
 
   const total = itens.reduce((soma, item) => soma + precoEfetivo(item.produto) * item.quantidade, 0);
 
+  // Envia o pedido pra API. Se der 409 (estoque insuficiente), a mensagem de
+  // erro da API ja vem pronta pra mostrar - ver postPedido em lib/api.ts.
   async function finalizar() {
     if (!clienteNome.trim() || itens.length === 0) return;
     setEnviando(true);

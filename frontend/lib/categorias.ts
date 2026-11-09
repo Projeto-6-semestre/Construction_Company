@@ -26,10 +26,12 @@ const ROTULOS: Record<string, string> = {
   tinta: "Tintas",
 };
 
+// Icone pra mostrar ao lado da categoria (usado nos cards/filtros da loja).
 export function iconeCategoria(categoria: string): string {
   return ICONES[categoria] ?? "📦";
 }
 
+// Nome "bonito" da categoria pra exibir na tela (a API guarda o valor cru, ex: "bloco").
 export function rotuloCategoria(categoria: string): string {
   return ROTULOS[categoria] ?? categoria.charAt(0).toUpperCase() + categoria.slice(1);
 }

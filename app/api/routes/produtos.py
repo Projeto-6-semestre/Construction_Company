@@ -67,6 +67,7 @@ async def atualizar_produto(
 
 @router.get("/{produto_id}", response_model=ProdutoRead)
 async def obter_produto(produto_id: int, db: DbSession) -> ProdutoRead:
+    """Detalhe de um produto por id - publica (pagina de produto da loja)."""
     produto = await produto_repository.get_by_id(db, produto_id)
     if produto is None:
         raise HTTPException(status_code=404, detail="Produto nao encontrado.")

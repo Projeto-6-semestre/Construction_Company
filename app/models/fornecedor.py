@@ -10,6 +10,10 @@ if TYPE_CHECKING:
 
 
 class Fornecedor(Base):
+    """Quem entrega material pra empresa (nao e cliente). Criado automaticamente
+    (get_or_create) quando alguem repoe estoque informando um fornecedor novo -
+    ver services/estoque_service.py."""
+
     __tablename__ = "fornecedores"
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)

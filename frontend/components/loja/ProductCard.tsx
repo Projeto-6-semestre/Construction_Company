@@ -14,9 +14,12 @@ interface Props {
   onAdicionar: (produto: Produto) => void;
 }
 
+// Card de produto no catalogo da loja. Mostra preco promocional riscado (se
+// tiver) e desabilita o botao de compra quando o estoque zerou.
 export function ProductCard({ produto, onAdicionar }: Props) {
   const semEstoque = Number(produto.quantidade_atual) <= 0;
   const temPromocao = produto.preco_promocional !== null;
+  // % de desconto calculado na hora (preco promo / preco normal), so pra exibir o selo.
   const percentualOff = temPromocao
     ? Math.round(
         (1 - Number(produto.preco_promocional) / Number(produto.preco_unitario)) * 100,

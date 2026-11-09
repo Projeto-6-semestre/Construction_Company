@@ -8,9 +8,12 @@ import { StockSidebar } from "@/components/StockSidebar";
 import { limparToken } from "@/lib/auth";
 import styles from "./page.module.css";
 
+// Tela principal do painel interno: estoque (StockSidebar) + chat com o agente
+// de IA (ChatPanel) lado a lado.
 function PainelInterno() {
   const router = useRouter();
 
+  // Apaga o token salvo e manda de volta pro login.
   function sair() {
     limparToken();
     router.push("/login");
@@ -43,6 +46,8 @@ function PainelInterno() {
   );
 }
 
+// Rota "/" do Next.js. So mostra o painel interno se RequireAuth confirmar
+// que existe um token de login valido salvo.
 export default function Home() {
   return (
     <RequireAuth>

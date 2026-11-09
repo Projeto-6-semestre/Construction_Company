@@ -8,6 +8,8 @@ interface Props {
   onMudarPagina: (pagina: number) => void;
 }
 
+// Navegacao de paginas do catalogo (numeros + setas). Some sozinha se so
+// existir 1 pagina de resultado.
 export function Pagination({ paginaAtual, totalPaginas, onMudarPagina }: Props) {
   if (totalPaginas <= 1) return null;
 

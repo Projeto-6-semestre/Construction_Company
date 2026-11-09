@@ -2,6 +2,8 @@ import Image from "next/image";
 import type { ChatMessage } from "@/types/api";
 import styles from "./ChatMessageBubble.module.css";
 
+// Uma "bolha" de mensagem do chat - muda o lado/avatar conforme quem falou
+// (usuario ou o agente de IA).
 export function ChatMessageBubble({ message }: { message: ChatMessage }) {
   const isUser = message.role === "user";
   return (

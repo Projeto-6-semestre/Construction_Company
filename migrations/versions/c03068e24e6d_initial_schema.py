@@ -5,21 +5,24 @@ Revises:
 Create Date: 2026-10-26 21:58:37.445279
 
 """
-from typing import Sequence, Union
+from collections.abc import Sequence
 
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = 'c03068e24e6d'
-down_revision: Union[str, Sequence[str], None] = None
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = None
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
-    """Upgrade schema."""
+    """Upgrade schema.
+
+    Cria as 5 tabelas iniciais do projeto: fornecedores, produtos, pedidos,
+    itens_pedido e movimentacoes_estoque (nessa ordem, por causa das FKs).
+    """
     op.create_table(
         "fornecedores",
         sa.Column("id", sa.Integer(), primary_key=True, autoincrement=True),

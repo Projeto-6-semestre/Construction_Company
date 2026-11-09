@@ -1,3 +1,5 @@
+# Rota publica (sem login) pra registrar pedido direto, sem passar pelo chat -
+# mesma regra de negocio do estoque_service que a tool do agente usa.
 from fastapi import APIRouter, HTTPException
 
 from app.api.deps import DbSession

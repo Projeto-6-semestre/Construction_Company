@@ -5,21 +5,24 @@ Revises: c03068e24e6d
 Create Date: 2026-10-31 16:23:02.235017
 
 """
-from typing import Sequence, Union
+from collections.abc import Sequence
 
-from alembic import op
 import sqlalchemy as sa
-
+from alembic import op
 
 # revision identifiers, used by Alembic.
 revision: str = '86b5ec187468'
-down_revision: Union[str, Sequence[str], None] = 'c03068e24e6d'
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = 'c03068e24e6d'
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 def upgrade() -> None:
-    """Upgrade schema."""
+    """Upgrade schema.
+
+    Adiciona a tabela usuarios (login do painel interno) e os campos
+    preco_promocional/imagem_url em produtos (pra loja publica).
+    """
     op.create_table(
         "usuarios",
         sa.Column("id", sa.Integer(), primary_key=True, autoincrement=True),

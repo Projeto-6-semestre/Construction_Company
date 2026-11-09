@@ -10,8 +10,12 @@ from app.core.security import decodificar_access_token
 from app.models.usuario import Usuario
 from app.repositories import usuario_repository
 
+# Atalho de tipo: qualquer rota que declare um parametro `db: DbSession` recebe
+# uma AsyncSession pronta (FastAPI resolve via Depends/get_db automaticamente).
 DbSession = Annotated[AsyncSession, Depends(get_db)]
 
+# auto_error=False: deixamos a propria funcao abaixo decidir a mensagem/status de
+# erro quando falta token, em vez do erro generico padrao do HTTPBearer.
 _bearer_scheme = HTTPBearer(auto_error=False)
 
 
@@ -36,6 +40,8 @@ async def get_current_usuario(
     return usuario
 
 
+# Atalho de tipo: `_admin: AdminUser` num parametro de rota basta pra exigir login -
+# FastAPI roda get_current_usuario antes do corpo da rota e barra quem nao passar.
 AdminUser = Annotated[Usuario, Depends(get_current_usuario)]
 
 __all__ = ["AdminUser", "DbSession", "get_db"]
