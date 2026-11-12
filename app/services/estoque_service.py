@@ -62,6 +62,12 @@ async def listar_categorias(db: AsyncSession) -> list[str]:
     return await produto_repository.list_categorias(db)
 
 
+async def obter_produto_por_id(db: AsyncSession, produto_id: int) -> Produto | None:
+    """So repassa pro repository, mesma razao de listar_categorias - usado pela
+    pagina de produto da loja (rota publica)."""
+    return await produto_repository.get_by_id(db, produto_id)
+
+
 async def listar_pedidos(db: AsyncSession) -> list[Pedido]:
     """Pedidos feitos pela loja (painel interno acompanhar). So repassa pro
     repository, mesma razao de listar_categorias."""
@@ -240,7 +246,7 @@ async def atualizar_produto(db: AsyncSession, produto_id: int, dados: ProdutoUpd
     try:
         produto = await produto_repository.get_by_id(db, produto_id)
         if produto is None:
-            raise ProdutoNaoEncontradoError(f"id={produto_id}")
+            raise ProdutoNaoEncontradoError(str(produto_id), por_id=True)
 
         # exclude_unset: so aplica os campos que vieram de verdade no payload -
         # permite inclusive limpar a promocao mandando preco_promocional: null

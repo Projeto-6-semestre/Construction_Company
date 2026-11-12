@@ -78,7 +78,7 @@ class ReporEstoqueArgs(BaseModel):
 
 
 class RegistrarPedidoArgs(BaseModel):
-    cliente_nome: str = Field(description="Nome do cliente que esta fazendo o pedido.")
+    cliente_nome: str = Field(min_length=1, description="Nome do cliente que esta fazendo o pedido.")
     itens: list[ItemPedidoCreate] = Field(description="Lista de SKU + quantidade pedidos pelo cliente.")
 
 
@@ -110,7 +110,7 @@ def make_tools(db: AsyncSession) -> list[BaseTool]:
         except EstoqueInsuficienteError as erro:
             return _format_estoque_insuficiente(erro.itens)
         except ProdutoNaoEncontradoError as erro:
-            return f"SKU nao encontrado: {erro.sku}"
+            return f"SKU nao encontrado: {erro.identificador}"
         itens_txt = ", ".join(f"{i.sku} x{_formatar_quantidade(i.quantidade)}" for i in itens)
         return f"Pedido #{pedido.id} confirmado para {cliente_nome}: {itens_txt}."
 
@@ -133,7 +133,7 @@ def make_tools(db: AsyncSession) -> list[BaseTool]:
                 motivo=motivo,
             )
         except ProdutoNaoEncontradoError as erro:
-            return f"SKU nao encontrado: {erro.sku}"
+            return f"SKU nao encontrado: {erro.identificador}"
         return (
             f"Estoque de {produto.sku} atualizado: "
             f"{_formatar_quantidade(produto.quantidade_atual)} {produto.unidade_medida}."

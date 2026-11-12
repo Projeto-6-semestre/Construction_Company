@@ -6,9 +6,14 @@ from typing import NamedTuple
 
 
 class ProdutoNaoEncontradoError(Exception):
-    def __init__(self, sku: str):
-        self.sku = sku
-        super().__init__(f"Produto com SKU '{sku}' nao encontrado.")
+    """Dois jeitos de identificar o produto que faltou: por SKU (maioria dos
+    casos - pedido, reposicao, chat) ou por id interno (edicao via painel,
+    que so recebe o id pela URL)."""
+
+    def __init__(self, identificador: str, *, por_id: bool = False):
+        self.identificador = identificador
+        campo = "id" if por_id else "SKU"
+        super().__init__(f"Produto com {campo} '{identificador}' nao encontrado.")
 
 
 class SkuJaExisteError(Exception):
