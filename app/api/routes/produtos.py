@@ -1,10 +1,15 @@
 from fastapi import APIRouter, HTTPException, Query
 
 from app.api.deps import AdminUser, DbSession
-from app.models.schemas import ProdutoCreate, ProdutoPage, ProdutoRead, ProdutoUpdate
-from app.repositories import produto_repository
+from app.models.schemas import (
+    ProdutoCreate,
+    ProdutoPage,
+    ProdutoPublicoRead,
+    ProdutoRead,
+    ProdutoUpdate,
+)
 from app.services import estoque_service
-from app.services.exceptions import ProdutoNaoEncontradoError, SkuJaExisteError
+from app.services.exceptions import SkuJaExisteError
 
 router = APIRouter(prefix="/produtos", tags=["produtos"])
 
@@ -58,17 +63,20 @@ async def atualizar_produto(
 ) -> ProdutoRead:
     """Edita nome/categoria/preco/promocao/imagem - nunca a quantidade em estoque
     direto (isso so muda via pedido ou reposicao, pra manter o historico certo).
-    Painel interno, exige login."""
-    try:
-        return await estoque_service.atualizar_produto(db, produto_id, payload)
-    except ProdutoNaoEncontradoError as erro:
-        raise HTTPException(status_code=404, detail=str(erro)) from erro
+    Painel interno, exige login.
+
+    Nao captura ProdutoNaoEncontradoError aqui de proposito - o handler global
+    em app/main.py ja converte pra 404 com a mesma mensagem."""
+    return await estoque_service.atualizar_produto(db, produto_id, payload)
 
 
-@router.get("/{produto_id}", response_model=ProdutoRead)
-async def obter_produto(produto_id: int, db: DbSession) -> ProdutoRead:
-    """Detalhe de um produto por id - publica (pagina de produto da loja)."""
-    produto = await produto_repository.get_by_id(db, produto_id)
+@router.get("/{produto_id}", response_model=ProdutoPublicoRead)
+async def obter_produto(produto_id: int, db: DbSession) -> ProdutoPublicoRead:
+    """Detalhe de um produto por id - publica (pagina de produto da loja).
+    Passa pela camada de servico (nunca repository direto) e devolve so os
+    campos que fazem sentido pro cliente ver - `quantidade_minima` e os
+    timestamps de auditoria sao dado interno."""
+    produto = await estoque_service.obter_produto_por_id(db, produto_id)
     if produto is None:
         raise HTTPException(status_code=404, detail="Produto nao encontrado.")
     return produto

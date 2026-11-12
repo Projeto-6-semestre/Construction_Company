@@ -34,6 +34,25 @@ class ProdutoRead(BaseModel):
     atualizado_em: datetime
 
 
+class ProdutoPublicoRead(BaseModel):
+    """Visao publica de um produto (pagina de produto da loja, GET /produtos/{id}
+    sem login) - sem campos internos de operacao. `quantidade_minima` e o ponto
+    de reposicao (dado interno, nao serve o cliente ver), e os timestamps de
+    auditoria tambem nao tem por que sair numa rota publica."""
+
+    model_config = ConfigDict(from_attributes=True)
+
+    id: int
+    sku: str
+    nome: str
+    categoria: str
+    unidade_medida: str
+    quantidade_atual: Decimal
+    preco_unitario: Decimal
+    preco_promocional: Decimal | None
+    imagem_url: str | None
+
+
 class ProdutoPage(BaseModel):
     """Resposta paginada do catalogo (loja publica e painel interno) - `total` e o
     total geral (nao so dessa pagina), usado pelo front pra montar a paginacao."""
@@ -48,10 +67,10 @@ class ProdutoCreate(BaseModel):
     """Corpo de POST /produtos (cadastro). `quantidade_atual` aqui e so o estoque
     inicial no cadastro - depois disso so muda via pedido/reposicao."""
 
-    sku: str
-    nome: str
-    categoria: str
-    unidade_medida: str
+    sku: str = Field(min_length=1)
+    nome: str = Field(min_length=1)
+    categoria: str = Field(min_length=1)
+    unidade_medida: str = Field(min_length=1)
     quantidade_atual: Decimal = Field(ge=0, default=Decimal(0))
     quantidade_minima: Decimal = Field(ge=0, default=Decimal(0))
     preco_unitario: Decimal = Field(gt=0)
@@ -106,7 +125,7 @@ class PedidoCreate(BaseModel):
     """Corpo de POST /pedidos. `min_length=1` barra pedido vazio direto na validacao,
     antes mesmo de chegar na camada de servico."""
 
-    cliente_nome: str
+    cliente_nome: str = Field(min_length=1)
     itens: list[ItemPedidoCreate] = Field(min_length=1)
 
 
@@ -153,8 +172,8 @@ class ChatResponse(BaseModel):
 
 
 class LoginRequest(BaseModel):
-    username: str
-    senha: str
+    username: str = Field(min_length=1, max_length=100)
+    senha: str = Field(min_length=1, max_length=200)
 
 
 class TokenResponse(BaseModel):
